@@ -54,6 +54,7 @@ jobs:
     # If this step fails, then you should remove it and run the build manually (see below)
     - run: |
        sudo apt-get install -y libgpg-error-dev libgcrypt20-dev python3 libmysqlclient-dev libcurl4-openssl-dev
+       sudo pip install pycryptodome
        cmake -B ${{github.workspace}}/build -DDEBUG=1 -DMYSQL=1 -DENCTEST=1 -DLIBGCRYPT=1 -DKMCCRYPTO=1
        cmake --build ${{github.workspace}}/build
       
