@@ -176,7 +176,7 @@ int32_t Crypto_MC_selftest(uint8_t* ingest)
 }
 
 /**
- * @brief Function: Crypto_SA_readASRN
+ * @brief Function: Crypto_SA_readARSN
  * @param ingest: uint8_t*
  * @return int32: Count
  **/
@@ -254,7 +254,7 @@ int32_t Crypto_SA_readARSN(uint8_t* ingest)
 int32_t Crypto_MC_resetalarm(void)
 { // Reset all alarm flags
     report.af = 0;
-    report.bsnf = 0;
+    report.barsnf = 0;
     report.bmacf = 0;
     report.ispif = 0;
     return CRYPTO_LIB_SUCCESS;

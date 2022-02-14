@@ -492,10 +492,10 @@ void Crypto_TM_updateOCF(void)
     else
     { // FSR
         tm_frame.tm_sec_trailer.ocf[0] = (report.cwt << 7) | (report.vnum << 4) | (report.af << 3) |
-                                         (report.bsnf << 2) | (report.bmacf << 1) | (report.ispif);
+                                         (report.barsnf << 2) | (report.bmacf << 1) | (report.ispif);
         tm_frame.tm_sec_trailer.ocf[1] = (report.lspiu & 0xFF00) >> 8;
         tm_frame.tm_sec_trailer.ocf[2] = (report.lspiu & 0x00FF);
-        tm_frame.tm_sec_trailer.ocf[3] = (report.snval);
+        tm_frame.tm_sec_trailer.ocf[3] = (report.arsnval);
         // Alternate OCF
         ocf = 0;
 #ifdef OCF_DEBUG

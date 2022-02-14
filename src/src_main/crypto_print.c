@@ -131,11 +131,11 @@ void Crypto_fsrPrint(SDLS_FSR_t* report)
     printf("\t cwt    = 0x%01x \n", report->cwt);
     printf("\t vnum   = 0x%01x \n", report->vnum);
     printf("\t af     = 0x%01x \n", report->af);
-    printf("\t bsnf   = 0x%01x \n", report->bsnf);
+    printf("\t barsnf   = 0x%01x \n", report->barsnf);
     printf("\t bmacf  = 0x%01x \n", report->bmacf);
     printf("\t ispif  = 0x%01x \n", report->ispif);
     printf("\t lspiu  = 0x%01x \n", report->lspiu);
-    printf("\t snval  = 0x%01x \n", report->snval);
+    printf("\t arsnval  = 0x%01x \n", report->arsnval);
     printf("\n");
 }
 

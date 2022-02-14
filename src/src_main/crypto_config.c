@@ -488,11 +488,11 @@ void Crypto_Local_Init(void)
     report.cwt = 1;   // Control Word Type "0b1""
     report.vnum = 4;  // FSR Version "0b100""
     report.af = 0;    // Alarm Field
-    report.bsnf = 0;  // Bad ARSN Flag
+    report.barsnf = 0;  // Bad ARSN Flag
     report.bmacf = 0; // Bad MAC Flag
     report.ispif = 0; // Invalid SPI Flag
     report.lspiu = 0; // Last SPI Used
-    report.snval = 0; // ARSN Value (LSB)
+    report.arsnval = 0; // ARSN Value (LSB)
 }
 
 /**

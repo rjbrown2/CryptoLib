@@ -867,7 +867,7 @@ static int32_t sadb_sa_delete(void)
 }
 
 /**
- * @brief Function: sadb_sa_setASRN
+ * @brief Function: sadb_sa_setARSN
  * @return int32: Success/Failure
  **/
 static int32_t sadb_sa_setARSN(void)
@@ -878,7 +878,7 @@ static int32_t sadb_sa_setARSN(void)
 
     // Read ingest
     spi = ((uint8_t)sdls_frame.pdu.data[0] << 8) | (uint8_t)sdls_frame.pdu.data[1];
-    printf("spi = %d \n", spi);
+    // printf("spi = %d \n", spi);
 
     // TODO: Check SA type (authenticated, encrypted, both) and set appropriately
     // TODO: Add more checks on bounds

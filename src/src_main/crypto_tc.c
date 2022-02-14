@@ -768,21 +768,26 @@ int32_t Crypto_TC_ProcessSecurity(uint8_t* ingest, int *len_ingest, TC_t* tc_sdl
                &(ingest[tc_mac_start_index]), sa_ptr->stmacf_len);
         if (crypto_config->ignore_anti_replay == TC_IGNORE_ANTI_REPLAY_FALSE)
         {
-            // If sequence number field is greater than zero, use as arsn
+            // If sequence number field is greater than zero, check within expected ARSN window
             if (sa_ptr->shsnf_len > 0)
             {
-                // Check Sequence Number is in ARCW
+                // Check Sequence Number is in ARSNW
                 status = Crypto_window(tc_sdls_processed_frame->tc_sec_header.arsn, sa_ptr->arsn, sa_ptr->shsnf_len,
                                        sa_ptr->arsn_win);
                 if (status != CRYPTO_LIB_SUCCESS)
                 {
                     return status;
                 }
-                // TODO: Update SA ARSN through SADB_Routine function call
+                // Valid ARSN, set received ARSN in SA
+                else
+                {
+                    memcpy(sa_ptr->arsn,tc_sdls_processed_frame->tc_sec_header.arsn, sa_ptr->shsnf_len);
+                }
             }
-            else
+            // If IV field length is greater than zero, check within expected ARSN window
+            if (sa_ptr->shivf_len > 0)
             {
-                // Check IV is in ARCW
+                // Check IV is in ARSNW
                 status = Crypto_window(tc_sdls_processed_frame->tc_sec_header.iv, sa_ptr->iv, sa_ptr->shivf_len,
                                        sa_ptr->arsn_win);
 #ifdef DEBUG
@@ -801,9 +806,15 @@ int32_t Crypto_TC_ProcessSecurity(uint8_t* ingest, int *len_ingest, TC_t* tc_sdl
 #endif
                 if (status != CRYPTO_LIB_SUCCESS)
                 {
+                    // If not success, can only have ARSN outside_window error
+                    // Update the error to be more specific wrt IV, not ARSN
+                    status = CRYPTO_LIB_ERR_IV_OUTSIDE_WINDOW;
                     return status;
                 }
-                // TODO: Update SA IV through SADB_Routine function call
+                else
+                {
+                    memcpy(sa_ptr->iv, tc_sdls_processed_frame->tc_sec_header.iv, sa_ptr->shivf_len);
+                }
             }
         }
 

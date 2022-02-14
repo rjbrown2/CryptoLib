@@ -106,7 +106,7 @@ int32_t Crypto_increment(uint8_t* num, int length)
 
 /**
  * @brief Function: Crypto_window
- * Determines if a value is within the expected window of values
+ * Determines if a value is within the expected positive window of values
  * @param actual: uint8*
  * @param expected: uint8*
  * @param length: int
@@ -115,7 +115,7 @@ int32_t Crypto_increment(uint8_t* num, int length)
  **/
 int32_t Crypto_window(uint8_t* actual, uint8_t* expected, int length, int window)
 {
-    int status = CRYPTO_LIB_ERR_BAD_ANTIREPLAY_WINDOW;
+    int status = CRYPTO_LIB_ERR_ARSN_OUTSIDE_WINDOW;
     int result = 0;
     uint8_t temp[length];
     int i;
