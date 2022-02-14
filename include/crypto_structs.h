@@ -76,10 +76,10 @@ typedef struct
     uint8_t acs : 8;        // Authentication Cipher Suite (algorithm / mode ID)
     uint16_t abm_len : 16;  // Authentication Bit Mask Length
     uint8_t* abm;           // Authentication Bit Mask (Primary Hdr. through Security Hdr.)
-    uint8_t arc_len : 8;    // Anti-Replay Counter Length
-    uint8_t* arc;           // Anti-Replay Counter
-    uint8_t arcw_len : 8;   // Anti-Replay Counter Window Length
-    uint16_t arcw;          // Anti-Replay Counter Window
+    uint8_t arsn_len : 8;    // Anti-Replay Sequence Number Length
+    uint8_t* arsn;           // Anti-Replay Sequence Number
+    uint8_t arsn_win_len : 8;   // Anti-Replay Sequence Number Window Length
+    uint16_t arsn_win;          // Anti-Replay Sequence Number Window
 
 } SecurityAssociation_t;
 #define SA_SIZE (sizeof(SecurityAssociation_t))
@@ -92,11 +92,11 @@ typedef struct
     uint8_t cwt : 1;     // Control Word Type
     uint8_t vnum : 3;    // FSR Version Number
     uint8_t af : 1;      // Alarm Field
-    uint8_t bsnf : 1;    // Bad SN Flag
+    uint8_t barsnf : 1;    // Bad SN Flag
     uint8_t bmacf : 1;   // Bad MAC Flag
     uint8_t ispif : 1;   // Invalid SPI Flag
     uint16_t lspiu : 16; // Last SPI Used
-    uint8_t snval : 8;   // SN Value (LSB)
+    uint8_t arsnval : 8;   // ARSN Value (LSB)
 } SDLS_FSR_t;
 #define SDLS_FSR_SIZE (sizeof(SDLS_FSR_t))
 
@@ -261,8 +261,8 @@ typedef struct
     uint16_t spi;             // Security Parameter Index
     uint8_t iv[IV_SIZE];      // Initialization Vector for encryption
     uint8_t iv_field_len;
-    uint8_t sn[TC_SN_SIZE];   // Sequence Number for anti-replay
-    uint8_t sn_field_len;
+    uint8_t arsn[TC_SN_SIZE];   // Sequence Number for anti-replay
+    uint8_t arsn_field_len;
     uint8_t pad[TC_PAD_SIZE]; // Count of the used fill Bytes
     uint8_t pad_field_len;
 } TC_FrameSecurityHeader_t;
@@ -362,7 +362,7 @@ typedef struct
 {
     uint16_t spi;        // Security Parameter Index
     uint8_t iv[IV_SIZE]; // Initialization Vector for encryption
-    // uint8_t	sn[TM_SN_SIZE]; 	// Sequence Number for anti-replay
+    // uint8_t	arsn[TM_SN_SIZE]; 	// Sequence Number for anti-replay
     // uint8_t	pad[TM_PAD_SIZE]; 	// Count of the used fill Bytes
 } TM_FrameSecurityHeader_t;
 #define TM_FRAME_SECHEADER_SIZE (sizeof(TM_FrameSecurityHeader_t))
