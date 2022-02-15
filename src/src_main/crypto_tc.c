@@ -776,6 +776,7 @@ int32_t Crypto_TC_ProcessSecurity(uint8_t* ingest, int *len_ingest, TC_t* tc_sdl
                                        sa_ptr->arsn_win);
                 if (status != CRYPTO_LIB_SUCCESS)
                 {
+                    printf("Bad ARSN error\n");
                     return status;
                 }
                 // Valid ARSN, set received ARSN in SA
@@ -808,6 +809,7 @@ int32_t Crypto_TC_ProcessSecurity(uint8_t* ingest, int *len_ingest, TC_t* tc_sdl
                 {
                     // If not success, can only have ARSN outside_window error
                     // Update the error to be more specific wrt IV, not ARSN
+                    printf("Bad IV Error\n");
                     status = CRYPTO_LIB_ERR_IV_OUTSIDE_WINDOW;
                     return status;
                 }
