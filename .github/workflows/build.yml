@@ -22,6 +22,6 @@ jobs:
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=10s --health-retries=10
     steps:
     - uses: actions/checkout@v2
-    - run: mysql -uroot -hlocalhost -pitc123! -e 'SELECT version()'
+    - run: mysql -uroot -hmysql -pitc123! -e 'SELECT version()'
      
 
