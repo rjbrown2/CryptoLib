@@ -24,12 +24,14 @@ jobs:
       run: sudo service mysql stop
       
     - name: Setup MariaDB
-      uses: getong/mariadb-action@v1.1
-      with: 
-        mysql root password: 'itc123!'
-        mysql user: 'developer'
-        mysql password: 'itc123!'
-        
+      run: |
+        sudo apt-get remove --purge mysql-server mysql-client mysql-common
+        sudo apt-get autoremove
+        sudo apt-get autoclean
+        sudo rm -rf /etc/mysql
+        sudo apt-get install aptitude
+        sudo aptitude install mariadb-server-10.4
+        sudo systemctl status mysql  
     - name: Which MariaDB
       run: which mysql && mysql --version
 
