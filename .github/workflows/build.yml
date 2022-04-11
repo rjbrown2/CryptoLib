@@ -20,15 +20,15 @@ jobs:
       
     - name: Install Dependencies
       run: sudo apt-get install -y libgpg-error-dev libgcrypt20-dev libmariadb-dev libmariadb-dev-compat
-      
-    - name: Which MYSQL
-      run: which mysql && mysql --version
+    - name: Shutdown Ubuntu MySQL
+      run: sudo service mysql stop
     - name: Setup MariaDB
       uses: getong/mariadb-action@v1.1
       with: 
         mysql root password: 'itc123!'
         mysql user: 'developer'
         mysql password: 'itc123!'
-    - run: which mariadb && mariadb --version
+    - name: Which MariaDB
+      run: which mysql && mysql --version
 
 
