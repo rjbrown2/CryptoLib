@@ -11,24 +11,18 @@ jobs:
     # You can convert this to a matrix build if you need cross-platform coverage.
     # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
     runs-on: ubuntu-latest
-
+    services:
+      mysql:
+        image: mariadb:10.4
+        env:
+          MYSQL_ROOT_PASSWORD: itc123!
+          MYSQL_DATABSE: symfony
+        ports:
+          - 3306/tcp
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=10s --health-retries=10
     steps:
     - uses: actions/checkout@v2
 
-    - name: Update
-      run: sudo apt-get update
-      
-    - name: Shutdown Ubuntu MySQL
-      run: sudo service mysql stop
-      
-    - name: Setup MariaDB
-      run: |
-        sudo apt-get remove --purge mysql-server mysql-client mysql-common
-        sudo apt-get autoremove
-        sudo apt-get autoclean
-        sudo rm -rf /etc/mysql
-        sudo apt-get install -y mariadb-server mariadb-client mariadb-common
-        sudo systemctl status mysql  
     - name: Which MariaDB
       run: which mysql && mysql --version
 
