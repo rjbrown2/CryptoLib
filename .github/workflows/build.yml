@@ -22,9 +22,6 @@ jobs:
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=10s --health-retries=10
     steps:
     - uses: actions/checkout@v2
-    - run: which mysql && mysql --version
-      env:
-        MYSQL_HOST: localhost
-        MYSQL_PORT: ${{ job.services.mysql.ports[3306] }}
+    - run: mysql -uroot -hlocalhost -e 'SELECT version()'
      
 
