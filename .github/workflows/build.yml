@@ -24,7 +24,7 @@ jobs:
       run: sudo service mysql stop
       
     - name: Setup MariaDB
-    - uses: getong/mariadb-action@v1.1
+      uses: getong/mariadb-action@v1.1
       with: 
         mysql root password: 'itc123!'
         mysql user: 'developer'
