@@ -29,7 +29,6 @@ jobs:
         mysql root password: 'itc123!'
         mysql user: 'developer'
         mysql password: 'itc123!'
-    - name: Which MariaDB
-      run: which mariadb && mariadb --version
+    - run: which mariadb && mariadb --version
 
 
