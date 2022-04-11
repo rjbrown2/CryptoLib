@@ -20,11 +20,10 @@ jobs:
       
     - name: Install Dependencies
       run: sudo apt-get install -y libgpg-error-dev libgcrypt20-dev libmariadb-dev libmariadb-dev-compat
-
-    - name: Install MariaDB
-      run: sudo apt-get install -y mariadb-client mariadb-server mariadb-common
       
     - name: Which MYSQL
       run: which mysql && mysql --version
+    - name: Which MariaDB
+      run: which mariadb && mariadb --version
 
 
