@@ -23,7 +23,12 @@ jobs:
       
     - name: Which MYSQL
       run: which mysql && mysql --version
-    - name: Which MariaDB
+    - name: Setup MariaDB
+      uses: getong/mariadb-action@v1.1
+      with: 
+        mysql root password: 'itc123!'
+        mysql user: 'developer'
+        mysql password: 'itc123!'
       run: which mariadb && mariadb --version
 
 
