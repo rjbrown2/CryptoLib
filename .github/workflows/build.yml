@@ -18,8 +18,6 @@ jobs:
     - name: Update
       run: sudo apt-get update
       
-    - name: Install Dependencies
-      run: sudo apt-get install -y libgpg-error-dev libgcrypt20-dev libmariadb-dev libmariadb-dev-compat
     - name: Shutdown Ubuntu MySQL
       run: sudo service mysql stop
       
@@ -30,7 +28,7 @@ jobs:
         sudo apt-get autoclean
         sudo rm -rf /etc/mysql
         sudo apt-get install aptitude
-        sudo aptitude install mariadb-server-10.4
+        sudo aptitude install mariadb-server mariadb-client mariadb-common
         sudo systemctl status mysql  
     - name: Which MariaDB
       run: which mysql && mysql --version
