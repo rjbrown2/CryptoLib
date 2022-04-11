@@ -11,28 +11,11 @@ jobs:
     # You can convert this to a matrix build if you need cross-platform coverage.
     # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
     runs-on: ubuntu-latest
-    services:
-      mysql:
-        image: mariadb:10.4
-        env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABSE: test
-        ports:
-          - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=10s --health-retries=10
+    container: rbrown00/cyrptolib:latest
     steps:
-    - name: Verify MariaDB Connection
-      run: | 
-        mysql --host 127.0.0.1 --port ${{ job.services.mysql.ports[3306] }} -uroot -proot -e "SHOW GRANTS FOR 'root'@'localhost'"
-        mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql --host 127.0.0.1 --port ${{ job.services.mysql.ports[3306] }} -uroot -proot mysql
-    
-    - name: Setup MySQL Database
-      env:
-        DB_HOST: 127.0.0.1
-        DB_PORT: ${{ job.services.mysql.ports[3306] }}
-      run: |
-        mysql --host $DB_HOST --port $DB_PORT -uroot -proot -e "SHOW DATABASES"
-        
-        
+      - uses: action/checkout@v2
+      - run: | 
+        mysql --version
+      
      
 
