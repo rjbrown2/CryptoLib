@@ -15,13 +15,25 @@ jobs:
       mysql:
         image: mariadb:10.4
         env:
-          MYSQL_ROOT_PASSWORD: itc123!
-          MYSQL_DATABSE: symfony
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABSE: test
         ports:
-          - 3306/tcp
+          - 3306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=10s --health-retries=10
     steps:
-    - uses: actions/checkout@v2
-    - run: mysql -uroot -hmysql -pitc123! -e 'SELECT version()'
+    - name: Verify MariaDB Connection
+      run: | 
+        sudo apt-get install -y mariadb-client 
+        mysql --host 127.0.0.1 --port ${{ job.services.mysql.ports[3306] }} -uroot -proot -e "SHOW GRANTS FOR 'root'@'localhost'"
+        mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql --host 127.0.0.1 --port ${{ job.services.mysql.ports[3306] }} -uroot -proot mysql
+    
+    - name: Setup MySQL Database
+      env:
+        DB_HOST: 127.0.0.1
+        DB_PORT: ${{ job.services.mysql.ports[3306] }}
+      run: |
+        mysql --host $DB_HOST --port $DB_PORT -uroot -proot -e "SHOW DATABASES"
+        
+        
      
 
