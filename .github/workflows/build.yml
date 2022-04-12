@@ -27,11 +27,9 @@ jobs:
         working-directory: ${{github.workspace}}/build
         #Maybe create a variable for this SQL location
         run: |
-          cd ${{github.workspace}}/build
-          ctest
-          ls -l  
           cd /__w/CryptoLib/CryptoLib/src/crypto_sadb/sadb_mariadb_admin_scripts/
           echo "----------------"
+          /etc/init.d/mysql start
           mysql --host=localhost -u root -p itc123! jplsadb < delete_sadb.sql
           mysql --host=localhost -u root -p itc123! jplsadb < create_sadb_user_grant_permissions.sql
           mysql --host=localhost -u root -p itc123! jplsadb < create_sadb.sql
