@@ -28,10 +28,9 @@ jobs:
         #Maybe create a variable for this SQL location
         run: |
           cd ${{github.workspace}}/build
-          ls
           ctest
 
-          cd ${{github.workspace}}
+          cd ${{github.workspace}}/src
           ls
           
           mysql --host=localhost -u root -p itc123! jplsadb < delete_sadb.sql
