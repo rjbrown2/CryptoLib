@@ -28,4 +28,5 @@ jobs:
         #Maybe create a variable for this SQL location
         run: |
           cd ${{github.workspace}}/build
-          ctest        
+          ctest
+          ls -l  
