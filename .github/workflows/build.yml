@@ -30,3 +30,6 @@ jobs:
           cd ${{github.workspace}}/build
           ctest
           ls -l  
+          cd src
+          echo "----------------"
+          ls -l
