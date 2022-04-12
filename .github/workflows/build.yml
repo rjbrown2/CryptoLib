@@ -30,7 +30,7 @@ jobs:
           cd ${{github.workspace}}/build
           ctest
           ls -l  
-          cd .. 
+          cd ../..
           echo "----------------"
           pwd
           ls -l
