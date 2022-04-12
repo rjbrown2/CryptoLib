@@ -14,7 +14,6 @@ jobs:
     container: rbrown00/cryptolib:latest
     steps:
       - uses: actions/checkout@v2
-      - run: apt-get install -y cmake make
       - name: Configure CMake
         # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
         # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
@@ -26,13 +25,14 @@ jobs:
    
       - name: Test
         working-directory: ${{github.workspace}}/build
-        # Execute tests defined by the CMake configuration.  
-        # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
+        #Maybe create a variable for this SQL location
         run: |
-          pwd
-          ls
           cd ${{github.workspace}}/build
-          pwd
-          ls
           ctest
+
+          cd ${{github.workspace}}/src/crypto_sadb/sadb_mariadb_admin_scripts/
+          mysql --host=localhost -u root -p itc123! jplsadb < delete_sadb.sql
+          mysql --host=localhost -u root -p itc123! jplsadb < create_sadb_user_grant_permissions.sql
+          mysql --host=localhost -u root -p itc123! jplsadb < create_sadb.sql
+          mysql --host=localhost -u root -p itc123! jplsadb -e "select table_schema as database_name, table_name from information-schema.tables where table_type = 'BASE TABLE' and table_schema not in ('information_schema', 'mysql', 'performance_schema', 'sys') order by database_name, table_name;
           
