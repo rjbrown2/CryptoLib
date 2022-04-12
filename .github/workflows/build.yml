@@ -29,12 +29,7 @@ jobs:
         run: |
           cd ${{github.workspace}}/build
           ctest
+	  ls
 
-          cd ${{github.workspace}}/build/src/crypto_sadb/sadb_mariadb_admin_scripts
-          ls
-          
-          mysql --host=localhost -u root -p itc123! jplsadb < delete_sadb.sql
-          mysql --host=localhost -u root -p itc123! jplsadb < create_sadb_user_grant_permissions.sql
-          mysql --host=localhost -u root -p itc123! jplsadb < create_sadb.sql
-          mysql --host=localhost -u root -p itc123! jplsadb -e "select table_schema as database_name, table_name from information-schema.tables where table_type = 'BASE TABLE' and table_schema not in ('information_schema', 'mysql', 'performance_schema', 'sys') order by database_name, table_name;
+
           
