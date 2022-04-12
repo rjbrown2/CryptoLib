@@ -30,7 +30,7 @@ jobs:
           cd ${{github.workspace}}/build
           ctest
 
-          cd ${{github.workspace}}/src
+          cd ${{github.workspace}}/build/src/crypto_sadb/sadb_mariadb_admin_scripts
           ls
           
           mysql --host=localhost -u root -p itc123! jplsadb < delete_sadb.sql
