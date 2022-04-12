@@ -25,10 +25,7 @@ jobs:
    
       - name: Test
         working-directory: ${{github.workspace}}/build
+        #Maybe create a variable for this SQL location
         run: |
           cd ${{github.workspace}}/build
-          ctest
-	  ls
-
-
-          
+          ctest        
