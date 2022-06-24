@@ -740,6 +740,7 @@ static int32_t cryptography_aead_encrypt(uint8_t* data_out, size_t len_data_out,
     if(sa_ptr->ek_ref == NULL)
     {
         status = CRYPTOGRAHPY_KMC_NULL_ENCRYPTION_KEY_REFERENCE_IN_SA;
+        free(iv_base64);
         return status;
     }
 
@@ -798,6 +799,8 @@ static int32_t cryptography_aead_encrypt(uint8_t* data_out, size_t len_data_out,
         strcat(encrypt_uri, kmc_root_uri);
         strcat(encrypt_uri, encrypt_endpoint_final);
     }
+
+    free(iv_base64);
 
 #ifdef DEBUG
     printf("Encrypt URI: %s\n",encrypt_uri);
