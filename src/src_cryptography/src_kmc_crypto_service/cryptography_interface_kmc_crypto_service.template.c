@@ -768,6 +768,7 @@ static int32_t cryptography_aead_encrypt(uint8_t* data_out, size_t len_data_out,
         encrypt_uri[0] = '\0';
         strcat(encrypt_uri, kmc_root_uri);
         strcat(encrypt_uri, encrypt_endpoint_final);
+        free(encrypt_endpoint_final);
 
         // Prepare encrypt_payload with AAD at the front for KMC Crypto Service.
         if(encrypt_bool == CRYPTO_FALSE) //Not encrypting data, only passing in AAD for TAG.
@@ -800,6 +801,7 @@ static int32_t cryptography_aead_encrypt(uint8_t* data_out, size_t len_data_out,
         encrypt_uri[0] = '\0';
         strcat(encrypt_uri, kmc_root_uri);
         strcat(encrypt_uri, encrypt_endpoint_final);
+        free(encrypt_endpoint_final);
     }
 
     free(iv_base64);
