@@ -551,6 +551,7 @@ static int32_t cryptography_validate_authentication(uint8_t* data_out, size_t le
 
     if(sa_ptr->ak_ref == NULL)
     {
+        free(mac_base64);
         status = CRYPTOGRAHPY_KMC_NULL_AUTHENTICATION_KEY_REFERENCE_IN_SA;
         return status;
     }
@@ -571,6 +572,7 @@ static int32_t cryptography_validate_authentication(uint8_t* data_out, size_t le
     strcat(auth_uri, kmc_root_uri);
     strcat(auth_uri, auth_endpoint_final);
     free(auth_endpoint_final);
+    free(mac_base64);
 
 #ifdef DEBUG
     printf("Authentication Verification URI: %s\n",auth_uri);
