@@ -986,8 +986,6 @@ static int32_t cryptography_aead_decrypt(uint8_t* data_out, size_t len_data_out,
     uint32_t key_len_in_bits_str_len = 0;
     char* key_len_in_bits_str = int_to_str(key_len_in_bits, &key_len_in_bits);
 
-
-
     curl_easy_reset(curl);
     configure_curl_connect_opts(curl);
 
@@ -1006,6 +1004,7 @@ static int32_t cryptography_aead_decrypt(uint8_t* data_out, size_t len_data_out,
     if(sa_ptr->ek_ref == NULL)
     {
         status = CRYPTOGRAHPY_KMC_NULL_ENCRYPTION_KEY_REFERENCE_IN_SA;
+        free(iv_base64);
         return status;
     }
 
@@ -1071,6 +1070,7 @@ static int32_t cryptography_aead_decrypt(uint8_t* data_out, size_t len_data_out,
         strcat(decrypt_uri, decrypt_endpoint_final);
         free(decrypt_endpoint_final);
     }
+    free(iv_base64);
 #ifdef DEBUG
     printf("Decrypt URI: %s\n",decrypt_uri);
 #endif
