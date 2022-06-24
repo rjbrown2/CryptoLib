@@ -110,6 +110,12 @@ int32_t Crypto_Key_OTAR(void)
                                                         NULL  // authentication cipher
                                                         );
 
+    // Stop here if decrypt failed
+    if (status != CRYPTO_LIB_SUCCESS)
+    { 
+        return status;
+    }
+
     // Read in Decrypted Data
     for (count = 14; x < pdu_keys; x++)
     { // Encrypted Key Blocks
