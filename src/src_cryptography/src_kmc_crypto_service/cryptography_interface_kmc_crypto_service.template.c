@@ -1022,6 +1022,7 @@ static int32_t cryptography_aead_decrypt(uint8_t* data_out, size_t len_data_out,
         decrypt_uri[0] = '\0';
         strcat(decrypt_uri, kmc_root_uri);
         strcat(decrypt_uri, decrypt_endpoint_final);
+        free(decrypt_endpoint_final);
 
         // Prepare decrypt_payload with AAD at the front for KMC Crypto Service.
         if(decrypt_bool == CRYPTO_FALSE) //Not decrypting data, only passing in AAD for TAG validation.
@@ -1059,6 +1060,7 @@ static int32_t cryptography_aead_decrypt(uint8_t* data_out, size_t len_data_out,
         decrypt_uri[0] = '\0';
         strcat(decrypt_uri, kmc_root_uri);
         strcat(decrypt_uri, decrypt_endpoint_final);
+        free(decrypt_endpoint_final);
     }
 #ifdef DEBUG
     printf("Decrypt URI: %s\n",decrypt_uri);
