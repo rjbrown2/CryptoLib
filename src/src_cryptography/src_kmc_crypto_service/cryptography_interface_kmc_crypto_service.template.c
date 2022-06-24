@@ -317,6 +317,7 @@ static int32_t cryptography_authenticate(uint8_t* data_out, size_t len_data_out,
     auth_uri[0] = '\0';
     strcat(auth_uri, kmc_root_uri);
     strcat(auth_uri, auth_endpoint_final);
+    free(auth_endpoint_final);
 
 #ifdef DEBUG
     printf("Authentication URI: %s\n",auth_uri);
