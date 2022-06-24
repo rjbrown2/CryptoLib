@@ -31,18 +31,22 @@
  **/
 char *c_read_file(const char *f_name, long *f_size)
 {
+    int status = CRYPTO_LIB_SUCCESS;
     char *buffer = 0;
     long length;
     FILE *f = fopen(f_name, "rb");
     if (f)
     {
-        fseek(f, 0, SEEK_END);
+        status = fseek(f, 0, SEEK_END);
+        if (status != CRYPTO_LIB_SUCCESS){return NULL;}
         length = ftell(f);
-        fseek(f, 0, SEEK_SET);
+        status = fseek(f, 0, SEEK_SET);
+        if (status != CRYPTO_LIB_SUCCESS){return NULL;}
         buffer = malloc(length);
         if (buffer)
         {
-            fread(buffer, 1, length, f);
+            status = fread(buffer, 1, length, f);
+            if (status != CRYPTO_LIB_SUCCESS){return NULL;}
         }
         fclose(f);
     }
