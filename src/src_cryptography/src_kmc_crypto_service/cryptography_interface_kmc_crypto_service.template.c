@@ -570,6 +570,7 @@ static int32_t cryptography_validate_authentication(uint8_t* data_out, size_t le
     auth_uri[0] = '\0';
     strcat(auth_uri, kmc_root_uri);
     strcat(auth_uri, auth_endpoint_final);
+    free(auth_endpoint_final);
 
 #ifdef DEBUG
     printf("Authentication Verification URI: %s\n",auth_uri);
