@@ -196,6 +196,8 @@ static int32_t cryptography_config(void)
         CURLcode res;
         res = curl_easy_perform(curl);
 
+        free(port_str);
+
         if(res != CURLE_OK) // This is not return code, this is successful response!
         {
             status = CRYPTOGRAHPY_KMC_CRYPTO_SERVICE_CONNECTION_ERROR;
