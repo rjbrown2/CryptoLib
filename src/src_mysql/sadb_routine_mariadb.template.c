@@ -542,6 +542,7 @@ static char* convert_byte_array_to_hexstring(void* src_buffer, size_t buffer_len
     char* hexstr = malloc(buffer_length * 2 + 1);
 
     if (src_buffer == NULL)
+        free(hexstr);
         return NULL;
 
     for (size_t i = 0; i < buffer_length; i++)
