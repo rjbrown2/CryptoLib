@@ -281,6 +281,10 @@ static int32_t parse_sa_from_mysql_query(char* query, SecurityAssociation_t** se
     int32_t status = CRYPTO_LIB_SUCCESS;
     SecurityAssociation_t* sa = calloc(1,sizeof(SecurityAssociation_t));
 
+    if (sa == NULL){
+        return CRYPTO_LIB_ERR_NULL_MALLOC_OR_CALLOC;
+    }
+
 #ifdef SA_DEBUG
     fprintf(stderr, "MySQL Query: %s \n", query);
 #endif
