@@ -288,6 +288,7 @@ static int32_t parse_sa_from_mysql_query(char* query, SecurityAssociation_t** se
     if (mysql_real_query(con, query, strlen(query)))
     { // query should be NUL terminated!
         status = finish_with_error(&con, SADB_QUERY_FAILED);
+        free(sa);
         return status;
     }
     // todo - if query fails, need to push failure message to error stack instead of just return code.
@@ -296,6 +297,7 @@ static int32_t parse_sa_from_mysql_query(char* query, SecurityAssociation_t** se
     if (result == NULL)
     {
         status = finish_with_error(&con, SADB_QUERY_EMPTY_RESULTS);
+        free(sa);
         return status;
     }
 
@@ -303,6 +305,7 @@ static int32_t parse_sa_from_mysql_query(char* query, SecurityAssociation_t** se
     if(num_rows == 0) // No rows returned in query!!
     {
         status = finish_with_error(&con, SADB_QUERY_EMPTY_RESULTS);
+        free(sa);
         return status;
     }
 
