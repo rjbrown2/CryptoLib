@@ -1056,6 +1056,8 @@ static int32_t cryptography_aead_decrypt(uint8_t* data_out, size_t len_data_out,
     {
         printf(KRED "ERROR: gcry_cipher_setkey error code %d\n" RESET, gcry_error & GPG_ERR_CODE_MASK);
         printf(KRED "Failure: %s/%s\n", gcry_strsource(gcry_error), gcry_strerror(gcry_error));
+        printf(KRED "Attempted to use key length of: %d\n", len_key);
+        // printf(KRED "Using ekid %d\n", sa_ptr->ekid);
         gcry_cipher_close(tmp_hd);
         status = CRYPTO_LIB_ERR_LIBGCRYPT_ERROR;
         return status;
