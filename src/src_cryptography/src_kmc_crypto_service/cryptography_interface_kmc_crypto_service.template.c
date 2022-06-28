@@ -325,7 +325,7 @@ static int32_t cryptography_authenticate(uint8_t* data_out, size_t len_data_out,
     printf("Authentication URI: %s\n",auth_uri);
 #endif
     curl_easy_setopt(curl, CURLOPT_URL, auth_uri);
-
+    free(auth_uri);
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, http_headers_list);
 
     memory_write* chunk_write = (memory_write*) calloc(1,MEMORY_WRITE_SIZE);
@@ -575,13 +575,14 @@ static int32_t cryptography_validate_authentication(uint8_t* data_out, size_t le
     strcat(auth_uri, auth_endpoint_final);
     free(auth_endpoint_final);
     free(mac_base64);
+    free(mac_size_str);
 
 #ifdef DEBUG
     printf("Authentication Verification URI: %s\n",auth_uri);
 #endif
 
     curl_easy_setopt(curl, CURLOPT_URL, auth_uri);
-
+    free(auth_uri);
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, http_headers_list);
 
     memory_write* chunk_write = (memory_write*) calloc(1,MEMORY_WRITE_SIZE);
@@ -771,6 +772,8 @@ static int32_t cryptography_aead_encrypt(uint8_t* data_out, size_t len_data_out,
         strcat(encrypt_uri, kmc_root_uri);
         strcat(encrypt_uri, encrypt_endpoint_final);
         free(encrypt_endpoint_final);
+        free(aad_offset_str);
+        free(mac_size_str);
 
         // Prepare encrypt_payload with AAD at the front for KMC Crypto Service.
         if(encrypt_bool == CRYPTO_FALSE) //Not encrypting data, only passing in AAD for TAG.
@@ -1033,6 +1036,8 @@ static int32_t cryptography_aead_decrypt(uint8_t* data_out, size_t len_data_out,
         strcat(decrypt_uri, kmc_root_uri);
         strcat(decrypt_uri, decrypt_endpoint_final);
         free(decrypt_endpoint_final);
+        free(aad_offset_str);
+        free(mac_size_str);
 
         // Prepare decrypt_payload with AAD at the front for KMC Crypto Service.
         if(decrypt_bool == CRYPTO_FALSE) //Not decrypting data, only passing in AAD for TAG validation.
@@ -1077,6 +1082,7 @@ static int32_t cryptography_aead_decrypt(uint8_t* data_out, size_t len_data_out,
     printf("Decrypt URI: %s\n",decrypt_uri);
 #endif
     curl_easy_setopt(curl, CURLOPT_URL, decrypt_uri);
+    free(decrypt_uri);
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, http_headers_list);
 
     memory_write* chunk_write = (memory_write*) calloc(1,MEMORY_WRITE_SIZE);
