@@ -1,0 +1,39 @@
+name: Build
+
+on: 
+  push:
+    branches: [ test ]
+  pull_request:
+
+jobs:
+  KMC_Test:
+    container:
+      image: docker.io/rbrown00/itc-kmc:latest
+      credentials:
+        username: ${{ secrets.DOCKER_USER }}
+        password: ${{ secrets.DOCKER_PASS }}
+      ports:
+        - 3306:3306
+        - 8443:8443
+    
+    services:
+      db:
+        image: docker.io/rbrown00/mariadb_itckmc
+        cap_add:
+        ports:
+          - '8443:8443'
+        volumes:
+          - db:/var/lib/mysql
+          
+    volumes:
+      db:
+        driver: local
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    
+    - name: Test
+      run: |
+        ls /
+        mysql -uroot -pitc123!
