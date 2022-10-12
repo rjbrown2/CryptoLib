@@ -19,15 +19,10 @@ jobs:
     services:
       db:
         image: docker.io/rbrown00/mariadb_itckmc
-        cap_add:
         ports:
           - '8443:8443'
         volumes:
           - db:/var/lib/mysql
-          
-    volumes:
-      db:
-        driver: local
     
     steps:
     - name: Checkout
