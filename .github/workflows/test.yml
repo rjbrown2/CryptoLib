@@ -7,7 +7,7 @@ on:
 
 jobs:
   KMC_Test:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     container:
       image: docker.io/rbrown00/itc-kmc:latest
       credentials:
@@ -16,12 +16,7 @@ jobs:
       ports:
         - 3306:3306
         - 8443:8443
-    
-    services:
-      db:
-        image: docker.io/rbrown00/mariadb_itckmc
-        ports:
-          - 8443:8443
+
     
     steps:
     - name: Checkout
@@ -30,4 +25,4 @@ jobs:
     - name: Test
       run: |
         ls / \
-        mysql -uroot -pitc123!
+        pwd
