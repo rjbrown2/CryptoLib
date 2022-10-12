@@ -22,8 +22,6 @@ jobs:
         image: docker.io/rbrown00/mariadb_itckmc
         ports:
           - 8443:8443
-        volumes:
-          - db:/var/lib/mysql
     
     steps:
     - name: Checkout
