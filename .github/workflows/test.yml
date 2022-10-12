@@ -25,4 +25,6 @@ jobs:
     - name: Test
       run: |
         ls / 
+        ls /certs
         pwd
+        ls
