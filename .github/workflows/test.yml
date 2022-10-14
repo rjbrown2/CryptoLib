@@ -21,8 +21,6 @@ jobs:
 
       - name: Test
         run: |
-          ls / 
-          ls /certs
-          pwd
-          ls
+          pwd 
+          ls 
           docker ps -a
