@@ -17,10 +17,8 @@ jobs:
           password: ${{ secrets.DOCKER_PASS }}
       - name: Build Compose Containers
         run: cd ./compose && docker-compose -f docker-compose-kmc-mdb up -d
-  
+      - name: Test KMC SA MGMT List
+        run: docker exec -it compose-kmc-1 /ammos/kmc-crypto-client/bin/kmc-sa-mgmt list
 
-      - name: Test
-        run: |
-          pwd 
-          ls 
-          docker ps -a
+      - name: Cleanup
+        run: cd ./compose && docker-compose -f docker-compose-kmc-mdb down
