@@ -18,9 +18,11 @@ jobs:
       - name: Build Compose Containers
         run: cd ./compose && docker-compose -f docker-compose-kmc-mdb up -d
       - name: Test KMC SA MGMT List
-        run: |
-          docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' compose_kmc_1
-          docker exec compose_kmc_1 /ammos/kmc-crypto-client/bin/kmc-sa-mgmt list
+        with: 
+          max_attempts: 3
+          command: |
+            docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' compose_kmc_1
+            docker exec compose_kmc_1 /ammos/kmc-crypto-client/bin/kmc-sa-mgmt list
 
       - name: Cleanup
         run: cd ./compose && docker-compose -f docker-compose-kmc-mdb down
