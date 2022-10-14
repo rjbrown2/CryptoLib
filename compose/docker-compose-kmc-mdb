@@ -1,0 +1,52 @@
+version: '3.8'
+services:
+  kmc:
+    hostname: itc-kmc.nasa.gov
+    image: itckmc:latest 
+    ports:    
+      - '8443:8443'
+    command: "/lib/systemd/systemd"
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - kmc:/certs/
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    privileged: true
+    networks:
+      appnet:
+        ipv4_address: 172.28.0.2
+  db:
+    hostname: db-itc-kmc.nasa.gov
+    image: mariadb:latest
+    cap_add:
+      - SYS_NICE
+    restart: always
+    environment:
+      - MYSQL_DATABSE=sadb
+      - MYSQL_ROOT_PASSWORD=itc123!
+    volumes:
+      - db:/var/lib/mysql
+      - kmc:/certs
+      - ../KMC_Docker/50-server.cnf:/etc/mysql/mariadb.conf.d/50-server.cnf
+      # Files to initalize the sql database
+      - ./create_sadb.sql:/docker-entrypoint-initdb.d/1.sql
+      - ./ivv_unit_tests.sql:/docker-entrypoint-initdb.d/2.sql
+      - ./create_user.sql:/docker-entrypoint-initdb.d/3.sql
+    depends_on:
+      - kmc
+    networks:
+      appnet:
+        ipv4_address: 172.28.0.3
+volumes:
+  db:
+    driver: local
+  kmc:
+    driver: local
+networks:
+  appnet:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.28.0.0/16"
