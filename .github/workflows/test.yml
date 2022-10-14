@@ -18,7 +18,7 @@ jobs:
       - name: Build Compose Containers
         run: cd ./compose && docker-compose -f docker-compose-kmc-mdb up -d
       - name: Test KMC SA MGMT List
-        run: docker exec -it compose_kmc_1 /ammos/kmc-crypto-client/bin/kmc-sa-mgmt list
+        run: docker exec compose_kmc_1 /ammos/kmc-crypto-client/bin/kmc-sa-mgmt list
 
       - name: Cleanup
         run: cd ./compose && docker-compose -f docker-compose-kmc-mdb down
