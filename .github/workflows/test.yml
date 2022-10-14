@@ -8,23 +8,20 @@ on:
 jobs:
   KMC_Test:
     runs-on: ubuntu-latest
-    container:
-      image: docker.io/rbrown00/itc-kmc:latest
-      credentials:
+    steps:
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
         username: ${{ secrets.DOCKER_USER }}
         password: ${{ secrets.DOCKER_PASS }}
-      ports:
-        - 3306:3306
-        - 8443:8443
+    - name: Build Compose Containers
+      run: cd ./compose && docker-compose -f docker-compose-kmc-mdb up
 
-    
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-    
+
     - name: Test
       run: |
         ls / 
         ls /certs
         pwd
         ls
+        docker ps -a
