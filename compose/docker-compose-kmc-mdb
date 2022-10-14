@@ -2,7 +2,7 @@ version: '3.8'
 services:
   kmc:
     hostname: itc-kmc.nasa.gov
-    image: itckmc:latest 
+    image: rbrown00/itc-kmc:latest 
     ports:    
       - '8443:8443'
     command: "/lib/systemd/systemd"
