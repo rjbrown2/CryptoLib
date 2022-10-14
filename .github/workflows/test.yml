@@ -16,7 +16,7 @@ jobs:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASS }}
       - name: Build Compose Containers
-        run: cd ./compose && docker-compose -f docker-compose-kmc-mdb up
+        run: cd ./compose && docker-compose -f docker-compose-kmc-mdb up -d
   
 
       - name: Test
