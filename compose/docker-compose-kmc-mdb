@@ -28,7 +28,7 @@ services:
     volumes:
       - db:/var/lib/mysql
       - kmc:/certs
-      - ../KMC_Docker/50-server.cnf:/etc/mysql/mariadb.conf.d/50-server.cnf
+      - ./50-server.cnf:/etc/mysql/mariadb.conf.d/50-server.cnf
       # Files to initalize the sql database
       - ./create_sadb.sql:/docker-entrypoint-initdb.d/1.sql
       - ./ivv_unit_tests.sql:/docker-entrypoint-initdb.d/2.sql
