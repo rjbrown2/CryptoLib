@@ -17,9 +17,9 @@ jobs:
           password: ${{ secrets.DOCKER_PASS }}
       - name: Build Compose Containers
         run: cd ./compose && docker-compose -f docker-compose-kmc-mdb up -d
-      - name: Test KMC SA MGMT List
-        uses: ./
-        with: 
+      - name: Test KMC SA MGMT List 
+        uses: nick-fields/retry@v2
+        with:
           max_attempts: 3
           command: |
             docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' compose_kmc_1
