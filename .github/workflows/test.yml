@@ -20,7 +20,9 @@ jobs:
       - name: Test KMC SA MGMT List 
         uses: nick-fields/retry@v2
         with:
+          timeout_seconds: 15
           max_attempts: 3
+          retry_on: error
           command: |
             docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' compose_kmc_1
             docker exec compose_kmc_1 /ammos/kmc-crypto-client/bin/kmc-sa-mgmt list
