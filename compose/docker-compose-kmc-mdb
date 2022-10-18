@@ -16,6 +16,17 @@ services:
     networks:
       appnet:
         ipv4_address: 172.28.0.2
+  redhat:
+    hostname: redhat-itc-kmc.nasa.gov
+    image: rbrown00/redhattest:latest
+    volumes:
+      - kmc:/certs
+      - '/home/runner/work/CryptoLib/CryptoLib:/itc/CryptoLib
+    networks:
+      appnet:
+        ipv4_address: 172.28.0.4
+    depends_on:
+      - kmc
   db:
     hostname: db-itc-kmc.nasa.gov
     image: mariadb:latest
