@@ -22,6 +22,8 @@ jobs:
       - name: Test CLib Copy
         run: |
           docker ps --all  
+          docker ps --all
+          docker ps --all
           docker exec compose_redhat_1 ls / 
         
      # - name: Test KMC SA MGMT List 
