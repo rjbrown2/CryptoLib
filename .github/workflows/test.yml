@@ -25,6 +25,8 @@ jobs:
           docker ps --all
           docker ps --all
           docker exec compose_redhat_1 ls / 
+          docker exec compose_redhat_1 ls /itc
+          docker exec compose_redhat_1 ls /itc/CryptoLib
         
      # - name: Test KMC SA MGMT List 
      #   uses: nick-fields/retry@v2
