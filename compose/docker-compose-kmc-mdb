@@ -21,7 +21,7 @@ services:
     image: rbrown00/redhattest:latest
     volumes:
       - kmc:/certs
-      - '/home/runner/work/CryptoLib/CryptoLib:/itc/CryptoLib
+      - '/home/runner/work/CryptoLib/CryptoLib:/itc/CryptoLib'
     networks:
       appnet:
         ipv4_address: 172.28.0.4
