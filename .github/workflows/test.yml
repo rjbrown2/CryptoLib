@@ -21,8 +21,8 @@ jobs:
         run: cd ./compose && docker-compose -f docker-compose-kmc-mdb up -d
       - name: Test CLib Copy
         run: |
-          docker ps --all 
-     # docker exec compose_redhat_1 ls / && ls /itc
+          docker ps --all  \
+          docker exec compose_redhat_1 ls / && ls /itc
         
      # - name: Test KMC SA MGMT List 
      #   uses: nick-fields/retry@v2
