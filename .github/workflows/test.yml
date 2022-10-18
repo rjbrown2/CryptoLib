@@ -10,22 +10,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Login to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PASS }}
-      - name: Build Compose Containers
-        run: cd ./compose && docker-compose -f docker-compose-kmc-mdb up -d
-      - name: Test KMC SA MGMT List 
-        uses: nick-fields/retry@v2
-        with:
-          timeout_seconds: 15
-          max_attempts: 3
-          retry_on: error
-          command: |
-            docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' compose_kmc_1
-            docker exec compose_kmc_1 /ammos/kmc-crypto-client/bin/kmc-sa-mgmt list
+      - name: Where Are We?
+        run: pwd && echo "NEXT LINE" && ls
+     # - name: Login to Docker Hub
+     #   uses: docker/login-action@v2
+     #   with:
+     #     username: ${{ secrets.DOCKER_USER }}
+     #     password: ${{ secrets.DOCKER_PASS }}
+     # - name: Build Compose Containers
+     #   run: cd ./compose && docker-compose -f docker-compose-kmc-mdb up -d
+     # - name: Test KMC SA MGMT List 
+     #   uses: nick-fields/retry@v2
+     #   with:
+     #     timeout_seconds: 15
+     #     max_attempts: 3
+     #     retry_on: error
+     #     command: |
+     #       docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' compose_kmc_1
+     #       docker exec compose_kmc_1 /ammos/kmc-crypto-client/bin/kmc-sa-mgmt list
 
-      - name: Cleanup
-        run: cd ./compose && docker-compose -f docker-compose-kmc-mdb down
+     # - name: Cleanup
+     #   run: cd ./compose && docker-compose -f docker-compose-kmc-mdb down
