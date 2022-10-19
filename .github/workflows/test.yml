@@ -22,12 +22,10 @@ jobs:
       - name: Build Compose Containers
         run: cd ./compose && docker-compose -f docker-compose-kmc-mdb up -d
       
-      - name: Remove Build Directory
-        run: if test -d /itc/CryptoLib/build; then rm -rf /itc/CryptoLib/build; fi
-      - name: Build Redhat CryptoLib
-        run: |
-          ls /
-          mkdir -p /itc/CryptoLib/build
+      - name: Remove Build Directory Redhat
+        run: docker exec compose_redhat_1 bash -c 'if test -d /itc/CryptoLib/build; then rm -rf /itc/CryptoLib/build; fi'
+      - name: Build and Make Test Redhat CryptoLib
+        run: docker exec compose_redhat_1 bash -c 'cd /itc/CryptoLib/ && mkdir build && cd build && cmake -DDEBUG=1 -DMYSQL=1 -DLIBGCRYPT=1 -DKMCCRYPTO=1 -DENCTEST=1 ../ && make && make test'
           
      # - name: Test KMC SA MGMT List 
      #   uses: nick-fields/retry@v2
@@ -39,5 +37,5 @@ jobs:
      #       docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' compose_kmc_1
      #       docker exec compose_kmc_1 /ammos/kmc-crypto-client/bin/kmc-sa-mgmt list
 
-     # - name: Cleanup
-     #   run: cd ./compose && docker-compose -f docker-compose-kmc-mdb down
+      - name: Cleanup
+        run: cd ./compose && docker-compose -f docker-compose-kmc-mdb down
