@@ -26,7 +26,7 @@ jobs:
         run: if test -d /itc/CryptoLib/build; then rm -rf /itc/CryptoLib/build; fi
       - name: Build Redhat CryptoLib
         run: |
-          ls
+          ls /
           mkdir -p /itc/CryptoLib/build
           cd /itc/CryptLib/build
           
