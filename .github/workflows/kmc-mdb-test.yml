@@ -21,13 +21,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASS }}
       - name: Build Compose Containers
         run: cd ./compose && docker-compose -f docker-compose-kmc-mdb up -d
-      - name: Determine Branch on Push
-        run: echo "CURRENT_BRANCH=$(git branch --show-current)" >> $GITHUB_ENV
-      #- name: Cat KMC Config
-      #  run: docker exec compose_kmc_1 bash -c 'cat /ammos/kmc-crypto-service/etc/kmc-crypto.cfg'
-      #- name: Test KMC
-      #  run: docker exec compose_redhat_1 bash -c 'curl -X POST --cert /certs/redhat-cert.pem --key /certs/redhat-key.pem  --cacert /certs/ammos-ca-bundle.crt "https://itc-kmc.nasa.gov:8443/crypto-service/encrypt?keyRef=kmc/test/key130&transformation=AES/GCM/NoPadding&IV=AAAAAAAAAAAAAAAH"'
-
+        
       - name: Remove Build Directory Redhat
         run: docker exec compose_redhat_1 bash -c 'if test -d /itc/CryptoLib/build; then rm -rf /itc/CryptoLib/build; fi'
         
@@ -37,18 +31,23 @@ jobs:
         run: docker exec compose_redhat_1 bash -c 'cd /itc/CryptoLib/build/bin && ./ut_tc_kmc --filter=TC_APPLY_SECURITY.HAPPY_PATH_ENC_CBC_KMC'   
       - name: Test RedHat CryptoLib2 
         run: docker exec compose_redhat_1 bash -c 'cd /itc/CryptoLib/build/bin && ./ut_tc_kmc --filter=TC_APPLY_SECURITY.HAPPY_PATH_ENC_CBC_KMC'   
-  
     
-    # - name: Test KMC SA MGMT List 
-     #   uses: nick-fields/retry@v2
-     #   with:
-     #     timeout_seconds: 15
-     #     max_attempts: 3
-     #     retry_on: error
-     #     command: |
-     #       docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' compose_kmc_1
-     #       docker exec compose_kmc_1 /ammos/kmc-crypto-client/bin/kmc-sa-mgmt list
-
+      - name: Test KMC SA MGMT List 
+        uses: nick-fields/retry@v2
+        with:
+          timeout_seconds: 15
+          max_attempts: 3
+          retry_on: error
+          command: |
+            docker exec compose_kmc_1 /ammos/kmc-crypto-client/bin/kmc-sa-mgmt list
+      - name: Test KMC Curl 
+        uses: nick-fields/retry@v2
+        with:
+          timeout_seconds: 15
+          max_attempts: 3
+          retry_on: error
+          command: |
+            docker exec compose_redhat_1 bash -c 'curl -X POST --cert /certs/redhat-cert.pem --key /certs/redhat-key.pem  --cacert /certs/ammos-ca-bundle.crt "https://itc-kmc.nasa.gov:8443/crypto-service/encrypt?keyRef=kmc/test/key130&transformation=AES/GCM/NoPadding&IV=AAAAAAAAAAAAAAAH"'
 
       - name: KMC Integration - Debian
         run: | 
