@@ -32,14 +32,14 @@ jobs:
       - name: Test RedHat CryptoLib2 
         run: docker exec compose_redhat_1 bash -c 'cd /itc/CryptoLib/build/bin && ./ut_tc_kmc --filter=TC_APPLY_SECURITY.HAPPY_PATH_ENC_CBC_KMC'   
     
-      - name: Test KMC SA MGMT List 
-        uses: nick-fields/retry@v2
-        with:
-          timeout_seconds: 15
-          max_attempts: 3
-          retry_on: error
-          command: |
-            docker exec compose_kmc_1 /ammos/kmc-crypto-client/bin/kmc-sa-mgmt list
+      #- name: Test KMC SA MGMT List 
+      #  uses: nick-fields/retry@v2
+      #  with:
+      #    timeout_seconds: 15
+      #    max_attempts: 3
+      #    retry_on: error
+      #    command: |
+      #      docker exec compose_kmc_1 /ammos/kmc-crypto-client/bin/kmc-sa-mgmt list
       - name: Test KMC Curl 
         uses: nick-fields/retry@v2
         with:
