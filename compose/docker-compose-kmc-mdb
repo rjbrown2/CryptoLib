@@ -16,6 +16,7 @@ services:
     networks:
       appnet:
         ipv4_address: 172.28.0.2
+
   redhat:
     hostname: redhat-itc-kmc.nasa.gov
     image: rbrown00/redhattest:latest
@@ -27,6 +28,19 @@ services:
         ipv4_address: 172.28.0.4
     depends_on:
       - kmc
+
+  debian:
+    hostname: debian-itc-kmc.nasa.gov
+    image: rbrown00/debiantest:latest
+    volumes:
+      - kmc:/certs
+      - '/home/runner/work/CryptoLib/CryptoLib:/itc/CryptoLib'
+    networks:
+      appnet:
+        ipv4_address: 172.28.0.5
+    depends_on:
+      - kmc
+
   db:
     hostname: db-itc-kmc.nasa.gov
     image: mariadb:latest
@@ -39,7 +53,7 @@ services:
     volumes:
       - db:/var/lib/mysql
       - kmc:/certs
-      - ./50-server.cnf:/etc/mysql/mariadb.conf.d/50-server.cnf
+      - ./50-server.cnf:/etc/mysql/conf.d/50-server.cnf
       # Files to initalize the sql database
       - ./create_sadb.sql:/docker-entrypoint-initdb.d/1.sql
       - ./ivv_unit_tests.sql:/docker-entrypoint-initdb.d/2.sql
@@ -53,6 +67,10 @@ volumes:
   db:
     driver: local
   kmc:
+    driver: local
+  debian:
+    driver: local
+  redhat:
     driver: local
 networks:
   appnet:

@@ -1,0 +1,20 @@
+name: CryptoLib - Debian - Build
+
+on: 
+  push:
+    branches: [ test ]
+  pull_request:
+
+jobs:
+  Debian_Build:
+    runs-on: ubuntu-latest
+    container:
+      image: rbrown00/debiantest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build
+        run: |
+          mkdir build
+          cd build
+          cmake -DDEBUG=1 -DMYSQL=1 -DLIBGCRYPT=1 -DKMCCRYPTO=1 -DENCTEST=1 ../
+          make
