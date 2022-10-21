@@ -48,7 +48,10 @@ jobs:
           retry_on: error
           command: |
             docker exec compose_redhat_1 bash -c 'curl -X POST --cert /certs/redhat-cert.pem --key /certs/redhat-key.pem  --cacert /certs/ammos-ca-bundle.crt "https://itc-kmc.nasa.gov:8443/crypto-service/encrypt?keyRef=kmc/test/key130&transformation=AES/GCM/NoPadding&IV=AAAAAAAAAAAAAAAH"'
-
+      - name: This might Break Stuff
+        run: |
+          docker exec -it compose_redhat_1 bash
+          /ammos/kmc-crypto-client/bin/kmc-sa-mgmt list
       - name: KMC Integration - Debian
         run: | 
           echo "WIP: Code must be completed to add KMC, and MYSQL test cases"
