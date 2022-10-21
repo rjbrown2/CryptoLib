@@ -35,7 +35,9 @@ jobs:
         run: docker exec compose_redhat_1 bash -c 'cd /itc/CryptoLib/ && git checkout ${{ env.CURRENT_BRANCH }} && mkdir build && cd build && cmake -DDEBUG=1 -DMYSQL=1 -DLIBGCRYPT=1 -DKMCCRYPTO=1 -DENCTEST=1 -DKMC_MDB_RH=1 ../ && make'
       - name: Test RedHat CryptoLib 
         run: docker exec compose_redhat_1 bash -c 'cd /itc/CryptoLib/build/bin && ./ut_tc_kmc --filter=TC_APPLY_SECURITY.HAPPY_PATH_ENC_CBC_KMC'   
-    
+      - name: Test RedHat CryptoLib2 
+        run: docker exec compose_redhat_1 bash -c 'cd /itc/CryptoLib/build/bin && ./ut_tc_kmc --filter=TC_APPLY_SECURITY.HAPPY_PATH_ENC_CBC_KMC'   
+  
     
     # - name: Test KMC SA MGMT List 
      #   uses: nick-fields/retry@v2
