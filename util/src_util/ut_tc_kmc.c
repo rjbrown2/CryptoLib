@@ -77,7 +77,8 @@ UTEST(TC_APPLY_SECURITY, HAPPY_PATH_ENC_CBC_KMC)
     return_val =
         Crypto_TC_ApplySecurity((uint8_t* )raw_tc_sdls_ping_b, raw_tc_sdls_ping_len, &ptr_enc_frame, &enc_frame_len);
 
-    char* truth_data_h = "2003001A0000000B025364F9BC3344AF359DA06CA886746F591C8E";
+    //char* truth_data_h = "2003001A0000000B025364F9BC3344AF359DA06CA886746F591C8E";
+    char* truth_data_h = "2003002A0000000B00000000000000000000000000000000025364F9BC3344AF359DA06CA886746F59A0AB";
     uint8_t* truth_data_b = NULL;
     int truth_data_l = 0;
 
