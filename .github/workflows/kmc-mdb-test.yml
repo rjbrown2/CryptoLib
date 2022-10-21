@@ -1,4 +1,4 @@
-     name: CryptoLib - Debian - Test
+name: CryptoLib - Debian - Test
 
 on: 
   push:
