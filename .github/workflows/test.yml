@@ -14,7 +14,10 @@ jobs:
       - uses: actions/checkout@v2
       - name: Build
         run: |
-          ls
+          mkdir build
+          cd build
+          cmake -DDEBUG=1 -DMYSQL=1 -DLIBGCRYPT=1 -DKMCCRYPTO=1 -DENCTEST=1 ../
+          make
           
      # - name: Determine Branch on Push
      #   run: echo "CURRENT_BRANCH=$(git branch --show-current)" >> $GITHUB_ENV
