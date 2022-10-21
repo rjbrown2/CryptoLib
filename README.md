@@ -3,9 +3,9 @@
 | [![Debian - Build](https://github.com/rjbrown2/CryptoLib/actions/workflows/debian-build.yml/badge.svg)](https://github.com/rjbrown2/CryptoLib/actions/workflows/debian-build.yml) | [![Debian - Test](https://github.com/rjbrown2/CryptoLib/actions/workflows/debian-test.yml/badge.svg)](https://github.com/rjbrown2/CryptoLib/actions/workflows/debian-test.yml) |
 | [![RedHat - Build](https://github.com/rjbrown2/CryptoLib/actions/workflows/redhat-build.yml/badge.svg)](https://github.com/rjbrown2/CryptoLib/actions/workflows/redhat-build.yml) | [![RedHat - Test](https://github.com/rjbrown2/CryptoLib/actions/workflows/redhat-test.yml/badge.svg)](https://github.com/rjbrown2/CryptoLib/actions/workflows/redhat-test.yml) | 
 
-| KMC | 
-| --- |
-| [![KMC - Integration](https://github.com/rjbrown2/CryptoLib/actions/workflows/kmc-mdb-test.yml/badge.svg)](https://github.com/rjbrown2/CryptoLib/actions/workflows/kmc-mdb-test.yml) |
+| KMC | Code Coverage | 
+| --- | ------------- |
+| [![KMC - Integration](https://github.com/rjbrown2/CryptoLib/actions/workflows/kmc-mdb-test.yml/badge.svg)](https://github.com/rjbrown2/CryptoLib/actions/workflows/kmc-mdb-test.yml) | [![CodeCov](https://codecov.io/gh/nasa/CryptoLib/branch/collab_main/graph/badge.svg?token=KCOMCQO0ZU)](https://codecov.io/gh/nasa/CryptoLib) |
 
 # CryptoLib
 
