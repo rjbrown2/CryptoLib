@@ -30,6 +30,7 @@ jobs:
       - name: KMC Integration - Debian
         run: | 
           echo "WIP: Code must be completed to add KMC, and MYSQL test cases"
+
      # - name: Remove Build Directory Redhat
      #   run: docker exec compose_redhat_1 bash -c 'if test -d /itc/CryptoLib/build; then rm -rf /itc/CryptoLib/build; fi'
         
@@ -47,5 +48,5 @@ jobs:
      #       docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' compose_kmc_1
      #       docker exec compose_kmc_1 /ammos/kmc-crypto-client/bin/kmc-sa-mgmt list
 
-     # - name: Cleanup
-     #   run: cd ./compose && docker-compose -f docker-compose-kmc-mdb down
+      - name: Cleanup
+        run: cd ./compose && docker-compose -f docker-compose-kmc-mdb down
