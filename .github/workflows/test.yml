@@ -7,13 +7,14 @@ on:
 
 jobs:
   Redhat_Build:
-    runs-on: rbrown00/redhattest
-    #runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
+    container:
+      image: rbrown00/redhattest
     steps:
       - uses: actions/checkout@v2
       - name: Build
         run: |
-          ls
+          
      # - name: Determine Branch on Push
      #   run: echo "CURRENT_BRANCH=$(git branch --show-current)" >> $GITHUB_ENV
      # - name: Use Branch
