@@ -24,7 +24,8 @@ jobs:
         
       - name: Remove Build Directory Redhat
         run: docker exec compose_redhat_1 bash -c 'if test -d /itc/CryptoLib/build; then rm -rf /itc/CryptoLib/build; fi'
-      
+      - name: View Certs
+        run: docker exec compose_redhat_1 bash -c 'ls -l /certs'
       - name: Test MARIADB Users
         run: docker exec -i compose_redhat_1 mysql -h db-itc-kmc.nasa.gov <<< "SELECT User, Host, Password FROM mysql.user;"
       - name: Test MARIADB SSL
