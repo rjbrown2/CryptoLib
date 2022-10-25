@@ -23,7 +23,7 @@ jobs:
         run: cd ./compose && docker-compose -f docker-compose-kmc-mdb up -d
         
       - name: Remove Build Directory Redhat
-        run: docker exec compose_redhat_1 bash -c 'if test -d /itc/CryptoLib/build; then rm -rf /itc/CryptoLib/build; fi'
+        run: docker exec compose_redhat_1 bash -c 'if test -d /itc/CryptoLib/build; then rm -rf /itc/CryptoLib/build; fi' 
       - name: View Certs
         run: docker exec compose_redhat_1 bash -c 'ls -l /certs'
       - name: Test MARIADB Users
