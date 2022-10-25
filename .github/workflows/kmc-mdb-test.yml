@@ -26,6 +26,13 @@ jobs:
         run: docker exec compose_redhat_1 bash -c 'if test -d /itc/CryptoLib/build; then rm -rf /itc/CryptoLib/build; fi'
       - name: View Certs
         run: docker exec compose_redhat_1 bash -c 'ls -l /certs'
+      - name: Verify MariaDB connections
+        run: |
+          while ! mysqladmin ping -h"db-itc-kmc.nasa.gov" -P"3306" --silent; do
+            sleep 1
+          done
+      - name: Restart MDB?
+        run: docker exec compose_db_1 bash -c '/etc/init.d/mysql
       - name: Test MARIADB Users
         run: docker exec -i compose_redhat_1 mysql -h db-itc-kmc.nasa.gov <<< "SELECT User, Host, Password FROM mysql.user;"
       - name: Test MARIADB SSL
