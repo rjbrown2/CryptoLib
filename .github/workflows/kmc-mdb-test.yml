@@ -26,7 +26,7 @@ jobs:
         run: docker exec compose_redhat_1 bash -c 'if test -d /itc/CryptoLib/build; then rm -rf /itc/CryptoLib/build; fi'
       
       - name: Test MARIADB Users
-        run: docker exec -i compose_db_1 mysql -uroot -pitc123! <<< "SELECT User, Host, Password FROM mysql.user;"
+        run: docker exec -i compose_redhat_1 mysql -h db-itc-kmc.nasa.gov <<< "SELECT User, Host, Password FROM mysql.user;"
       - name: Test MARIADB SSL
         run: docker exec -i compose_db_1 mysql -uroot -pitc123! <<< "show variables like '%ssl';"
       - name: Build RedHat CryptoLib
