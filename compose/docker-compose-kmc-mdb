@@ -59,7 +59,7 @@ services:
       - ./ivv_unit_tests.sql:/docker-entrypoint-initdb.d/2.sql
       - ./create_user.sql:/docker-entrypoint-initdb.d/3.sql
     ports:
-      3306:3306
+      - '3306:3306'
     depends_on:
       - kmc
     networks:
