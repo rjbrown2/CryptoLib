@@ -24,42 +24,17 @@ jobs:
         
       - name: Remove Build Directory Redhat
         run: docker exec compose_redhat_1 bash -c 'if test -d /itc/CryptoLib/build; then rm -rf /itc/CryptoLib/build; fi' 
-      - name: View Certs
-        run: docker exec compose_redhat_1 bash -c 'ls -l /certs'
-      - name: START SQL?
+      - name: START SQL
         run: docker exec compose_db_1 bash -c '/etc/init.d/mariadb start'
-      - name: Test MARIADB Users
-        run: docker exec -i compose_redhat_1 mysql -h db-itc-kmc.nasa.gov <<< "SELECT User, Host, Password FROM mysql.user;"
-      - name: Test MARIADB SSL
-        if: always()
-        run: docker exec -i compose_db_1 mysql -uroot -pitc123! -h db-itc-kmc.nasa.gov <<< "show variables like '%ssl';"
-      - name: Another Failure
-        if: always()
-        run: docker exec compose_kmc_1 bash -c '/ammos/kmc-crypto-client/bin/kmc-sa-mgmt list'
       - name: Build RedHat CryptoLib
         if: always()
         run: docker exec compose_redhat_1 bash -c 'cd /itc/CryptoLib/ && git checkout ${{ env.CURRENT_BRANCH }} && mkdir build && cd build && cmake -DDEBUG=1 -DMYSQL=1 -DLIBGCRYPT=1 -DKMCCRYPTO=1 -DENCTEST=1 -DKMC_MDB_RH=1 ../ && make'
       - name: Test RedHat CryptoLib - ut_tc_kmc
         if: always()
         run: docker exec compose_redhat_1 bash -c 'cd /itc/CryptoLib/build/bin && ./ut_tc_kmc' 
-    
-      #- name: Test KMC SA MGMT List 
-      #  uses: nick-fields/retry@v2
-      #  with:
-      #    timeout_seconds: 15
-      #    max_attempts: 3
-      #    retry_on: error
-      #    command: |
-      #      docker exec compose_kmc_1 /ammos/kmc-crypto-client/bin/kmc-sa-mgmt list
-      - name: Test KMC Curl 
-        uses: nick-fields/retry@v2
-        with:
-          timeout_seconds: 15
-          max_attempts: 3
-          retry_on: error
-          command: |
-            docker exec compose_redhat_1 bash -c 'curl -X POST --cert /certs/redhat-cert.pem --key /certs/redhat-key.pem  --cacert /certs/ammos-ca-bundle.crt "https://itc-kmc.nasa.gov:8443/crypto-service/encrypt?keyRef=kmc/test/key130&transformation=AES/GCM/NoPadding&IV=AAAAAAAAAAAAAAAH"'
-
+      - name: KMC-SA-MGMT LIST
+        if: always()
+        run: docker exec compose_kmc_1 bash -c '/ammos/kmc-crypto-client/bin/kmc-sa-mgmt list'
       - name: KMC Integration - Debian
         run: | 
           echo "WIP: Code must be completed to add KMC, and MYSQL test cases"
