@@ -34,7 +34,9 @@ jobs:
         run: docker exec compose_kmc_1 bash -c '/ammos/kmc-crypto-client/bin/kmc-sa-mgmt list'
         
       - name: Remove Build Directory Debian
-        run:  docker exec compose_debian_1 bash -c 'if test -d /itc/CryptoLib/build; then rm -rf /itc/CryptoLib/build; fi'
+        run: docker exec compose_debian_1 bash -c 'if test -d /itc/CryptoLib/build; then rm -rf /itc/CryptoLib/build; fi'
+      - name: Exception for Git Directory
+        run: docker exec compose_debian_1 bash -c 'git config --global --add safe.directory /itc/CryptoLib'
       - name: Build Debian CryptoLib
         run: docker exec compose_debian_1 bash -c 'cd /itc/CryptoLib/ && git checkout ${{ env.CURRENT_BRANCH }} && mkdir build && cd build && cmake -DDEBUG=1 -DMYSQL=1 -DLIBGCRYPT=1 -DKMCCRYPTO=1 -DENCTEST=1 -DKMC_MDB_DB=1 ../ && make'
       - name: Test Debian CryptoLib - ut_tc_kmc
