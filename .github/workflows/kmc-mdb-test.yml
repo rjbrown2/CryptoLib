@@ -6,7 +6,37 @@ on:
   pull_request:
 
 jobs:
-  Redhat_Build:
+  Redhat_Integration_Tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Determine Branch on Push
+        run: echo "CURRENT_BRANCH=$(git branch --show-current)" >> $GITHUB_ENV
+      - name: Use Branch
+        run: echo ${{ env.CURRENT_BRANCH}}
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASS }}
+      - name: Build Compose Containers
+        run: cd ./compose && docker-compose -f docker-compose-kmc-mdb up -d
+      
+      - name: START SQL
+        run: docker exec compose_db_1 bash -c '/etc/init.d/mariadb start'
+        
+      - name: Remove Build Directory Redhat
+        run: docker exec compose_redhat_1 bash -c 'if test -d /itc/CryptoLib/build; then rm -rf /itc/CryptoLib/build; fi' 
+      - name: Build RedHat CryptoLib
+        run: docker exec compose_redhat_1 bash -c 'cd /itc/CryptoLib/ && git checkout ${{ env.CURRENT_BRANCH }} && mkdir build && cd build && cmake -DDEBUG=1 -DMYSQL=1 -DLIBGCRYPT=1 -DKMCCRYPTO=1 -DENCTEST=1 -DKMC_MDB_RH=1 ../ && make'
+      - name: Test RedHat CryptoLib - ut_tc_kmc
+        run: docker exec compose_redhat_1 bash -c 'cd /itc/CryptoLib/build/bin && ./ut_tc_kmc' 
+      - name: KMC-SA-MGMT LIST
+        run: docker exec compose_kmc_1 bash -c '/ammos/kmc-crypto-client/bin/kmc-sa-mgmt list'
+      - name: Cleanup Redhat
+        run: cd ./compose && docker-compose -f docker-compose-kmc-mdb down
+        
+  Debian_Integration_Tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -22,16 +52,8 @@ jobs:
       - name: Build Compose Containers
         run: cd ./compose && docker-compose -f docker-compose-kmc-mdb up -d
         
-      - name: Remove Build Directory Redhat
-        run: docker exec compose_redhat_1 bash -c 'if test -d /itc/CryptoLib/build; then rm -rf /itc/CryptoLib/build; fi' 
       - name: START SQL
         run: docker exec compose_db_1 bash -c '/etc/init.d/mariadb start'
-      - name: Build RedHat CryptoLib
-        run: docker exec compose_redhat_1 bash -c 'cd /itc/CryptoLib/ && git checkout ${{ env.CURRENT_BRANCH }} && mkdir build && cd build && cmake -DDEBUG=1 -DMYSQL=1 -DLIBGCRYPT=1 -DKMCCRYPTO=1 -DENCTEST=1 -DKMC_MDB_RH=1 ../ && make'
-      - name: Test RedHat CryptoLib - ut_tc_kmc
-        run: docker exec compose_redhat_1 bash -c 'cd /itc/CryptoLib/build/bin && ./ut_tc_kmc' 
-      - name: KMC-SA-MGMT LIST
-        run: docker exec compose_kmc_1 bash -c '/ammos/kmc-crypto-client/bin/kmc-sa-mgmt list'
         
       - name: Remove Build Directory Debian
         run: docker exec compose_debian_1 bash -c 'if test -d /itc/CryptoLib/build; then rm -rf /itc/CryptoLib/build; fi'
@@ -44,5 +66,5 @@ jobs:
       - name: KMC-SA-MGMT LIST
         run: docker exec compose_kmc_1 bash -c '/ammos/kmc-crypto-client/bin/kmc-sa-mgmt list'
         
-      - name: Cleanup
+      - name: Cleanup Debian
         run: cd ./compose && docker-compose -f docker-compose-kmc-mdb down
