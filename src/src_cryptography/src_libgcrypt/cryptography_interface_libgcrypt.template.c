@@ -1408,7 +1408,7 @@ int32_t cryptography_get_acs_algo(int8_t algo_enum)
 
         default:
 #ifdef DEBUG
-            printf("ACS Algo Enum not supported\n");
+            printf("ACS Algo Enum: %d, not supported\n", algo_enum);
 #endif
             break;
     }
@@ -1435,7 +1435,7 @@ int32_t cryptography_get_ecs_algo(int8_t algo_enum)
 
         default:
 #ifdef DEBUG
-            printf("Algo Enum not supported\n");
+            printf("Algo Enum: %d, not supported\n", algo_enum);
 #endif
             break;
     }

@@ -28,6 +28,125 @@
 #include "shared_util.h"
 #include <stdio.h>
 
+#include <mysql/mysql.h>
+
+#ifdef KMC_MDB_RH
+    #define CLIENT_CERTIFICATE "/certs/redhat-cert.pem"
+    #define CLIENT_CERTIFICATE_KEY "/certs/redhat-key.pem"
+#endif
+
+#ifdef KMC_MDB_DB
+    #define CLIENT_CERTIFICATE "/certs/debian-cert.pem"
+    #define CLIENT_CERTIFICATE_KEY "/certs/debian-key.pem"
+#endif
+
+/**
+ * @brief Error Function for MDB_DB_RESET
+ * 
+ * @param con 
+ */
+void finish_with_error(MYSQL *con)
+{
+  fprintf(stderr, "%s\n", mysql_error(con));
+  mysql_close(con);
+  exit(1);
+}
+
+/**
+ * @brief MariaDB: Table Cleanup for Unit Tests
+ * Be sure to use only after initialization
+ * TODO: Move to shared function for all Unit Tests
+ */
+void MDB_DB_RESET()
+{
+    MYSQL *con = mysql_init(NULL);
+    if(sadb_mariadb_config->mysql_mtls_key != NULL)
+            {
+                mysql_optionsv(con, MYSQL_OPT_SSL_KEY, sadb_mariadb_config->mysql_mtls_key);
+            }
+            if(sadb_mariadb_config->mysql_mtls_cert != NULL)
+            {
+                mysql_optionsv(con, MYSQL_OPT_SSL_CERT, sadb_mariadb_config->mysql_mtls_cert);
+            }
+            if(sadb_mariadb_config->mysql_mtls_ca != NULL)
+            {
+                mysql_optionsv(con, MYSQL_OPT_SSL_CA, sadb_mariadb_config->mysql_mtls_ca);
+            }
+            if(sadb_mariadb_config->mysql_mtls_capath != NULL)
+            {
+                mysql_optionsv(con, MYSQL_OPT_SSL_CAPATH, sadb_mariadb_config->mysql_mtls_capath);
+            }
+            if (sadb_mariadb_config->mysql_tls_verify_server != CRYPTO_FALSE)
+            {
+                mysql_optionsv(con, MYSQL_OPT_SSL_VERIFY_SERVER_CERT, &(sadb_mariadb_config->mysql_tls_verify_server));
+            }
+            if (sadb_mariadb_config->mysql_mtls_client_key_password != NULL)
+            {
+                mysql_optionsv(con, MARIADB_OPT_TLS_PASSPHRASE, sadb_mariadb_config->mysql_mtls_client_key_password);
+            }
+            if (sadb_mariadb_config->mysql_require_secure_transport == CRYPTO_TRUE)
+            {
+                mysql_optionsv(con, MYSQL_OPT_SSL_ENFORCE,&(sadb_mariadb_config->mysql_require_secure_transport));
+            }
+            //if encrypted connection (TLS) connection. No need for SSL Key
+            if (mysql_real_connect(con, sadb_mariadb_config->mysql_hostname,
+                    sadb_mariadb_config->mysql_username,
+                    sadb_mariadb_config->mysql_password,
+                    sadb_mariadb_config->mysql_database,
+                    sadb_mariadb_config->mysql_port, NULL, 0) == NULL)
+            {
+                //0,NULL,0 are port number, unix socket, client flag
+                finish_with_error(con);
+            }
+
+    printf("Truncating Tables\n");
+    char* query = "TRUNCATE TABLE security_associations\n";
+    if (mysql_real_query(con, query, strlen(query)))
+    { // query should be NUL terminated!
+        printf("Failed to Truncate Table\n");
+        finish_with_error(con);
+    }
+
+    // SA-1
+    query = "INSERT INTO security_associations (spi,ekid,sa_state,ecs,est,ast,shivf_len,iv_len,stmacf_len,iv,abm_len,abm,arsnw,arsn_len,tfvn,scid,vcid,mapid) VALUES (1,'itc/test/key1',3,X'01',1,1,12,12,16,X'000000000000000000000001',19,X'00000000000000000000000000000000000000',5,0,0,44,0,0);";
+    if (mysql_real_query(con, query, strlen(query)))
+    { // query should be NUL terminated!
+        printf("Failed to re-create security_association table for SPI 1\n");
+        finish_with_error(con);
+    }
+
+    // SA-2
+    query = "INSERT INTO security_associations (spi,ekid,sa_state,ecs,est,ast,shivf_len,iv_len,stmacf_len,iv,abm_len,abm,arsnw,arsn_len,tfvn,scid,vcid,mapid) VALUES (2,'itc/test/key2',3,X'01',1,0,12,12,16,X'000000000000000000000001',19,X'00000000000000000000000000000000000000',5,0,0,3,0,0);";
+    if (mysql_real_query(con, query, strlen(query)))
+    { // query should be NUL terminated!
+        printf("Failed to re-create security_association table for SPI 1\n");
+        finish_with_error(con);
+    }
+
+    // SA-3
+    query = "INSERT INTO security_associations (spi,ekid,sa_state,ecs,est,ast,shivf_len,iv_len,stmacf_len,iv,abm_len,abm,arsnw,arsn_len,tfvn,scid,vcid,mapid) VALUES (3,'itc/test/key3',3,X'01',1,1,12,12,16,X'000000000000000000000001',20,X'0000000000000000000000000000000000000000',5,0,0,3,1,0);";
+    if (mysql_real_query(con, query, strlen(query)))
+    { // query should be NUL terminated!
+        printf("Failed to re-create security_association table for SPI 1\n");
+        finish_with_error(con);
+    }
+
+    // SA-4
+    query = "INSERT INTO security_associations (spi,ekid,sa_state,ecs,est,ast,shivf_len,iv_len,stmacf_len,iv,abm_len,abm,arsnw,arsn_len,tfvn,scid,vcid,mapid) VALUES (4,'itc/test/key4',3,X'01',1,1,6,12,16,X'000000000000FFFFFFFFFFFC',20,X'0000000000000000000000000000000000000000',5,0,0,3,2,0);";
+    if (mysql_real_query(con, query, strlen(query)))
+    { // query should be NUL terminated!
+        printf("Failed to re-create security_association table for SPI 1\n");
+        finish_with_error(con);
+    }
+
+    // SA-5
+    query = "INSERT INTO security_associations (spi,ekid,sa_state,ecs,est,ast,shivf_len,iv_len,stmacf_len,iv,abm_len,abm,arsnw,arsn_len,arsn,tfvn,scid,vcid,mapid,ecs_len,acs_len,acs,shsnf_len) VALUES (5,'itc/test/key5',3,X'01',0,1,12,12,16,X'000000000000000000000001',36,X'000000000000000000000000000000000000000000000000000000000000000000000000',5,3,X'05FFFC',0,3,3,0,1,1,X'00',2);";
+    if (mysql_real_query(con, query, strlen(query)))
+    { // query should be NUL terminated!
+        printf("Failed to re-create security_association table for SPI 1\n");
+        finish_with_error(con);
+    }
+}
 
 void cleanup_sa(SecurityAssociation_t* test_association)
 {
@@ -49,27 +168,19 @@ void cleanup_sa(SecurityAssociation_t* test_association)
     free(test_association);
 }
 
-void reload_db(void)
-{
-    printf("Resetting Database\n");
-    system("mysql --host=localhost -uroot -pitc123! < ../../src/crypto_sadb/sadb_mariadb_sql/empty_sadb.sql");
-    system("mysql --host=localhost -uroot -pitc123! < ../../src/crypto_sadb/test_sadb_mariadb_sql/create_sadb_ivv_unit_tests.sql");
-}
-
-
 // Global SQL Connection Parameters
 // Generic passwords saved in a file = bad ... but this is just for testing
 
 char* mysql_username = "root";
-char* mysql_password = "itc123!";
-char* mysql_hostname = "localhost";
+char* mysql_password = NULL;
+char* mysql_hostname = "db-itc-kmc.nasa.gov";
 char* mysql_database = "sadb";
-uint16_t mysql_port = 3306; //default port
-char* ssl_cert = "NONE";
-char* ssl_key = "NONE";
-char* ssl_ca = "NONE";
-char* ssl_capath = "NONE";
-uint8_t verify_server = 0; 
+uint16_t mysql_dbport = 3306; //default port
+char* ssl_cert = CLIENT_CERTIFICATE;
+char* ssl_key = CLIENT_CERTIFICATE_KEY;
+char* ssl_ca = "/certs/ammos-ca-bundle.crt";
+char* ssl_capath = NULL;
+uint8_t verify_server = 0;
 char* client_key_password = NULL;
 
 /**
@@ -78,9 +189,8 @@ char* client_key_password = NULL;
 UTEST(MARIA_DB, DB_CONNECT)
 {
     int32_t status = CRYPTO_LIB_ERROR;
-    reload_db();
     
-    status = Crypto_Config_MariaDB(mysql_hostname, mysql_database, mysql_port, CRYPTO_FALSE, verify_server, ssl_ca,
+    status = Crypto_Config_MariaDB(mysql_hostname, mysql_database, mysql_dbport, CRYPTO_FALSE, verify_server, ssl_ca,
                                 ssl_capath, ssl_cert, ssl_key, client_key_password, mysql_username, mysql_password);
     ASSERT_EQ(CRYPTO_LIB_SUCCESS, status);
 
@@ -91,6 +201,9 @@ UTEST(MARIA_DB, DB_CONNECT)
     Crypto_Config_Add_Gvcid_Managed_Parameter(0, 0x0003, 1, TC_HAS_FECF, TC_HAS_SEGMENT_HDRS, TC_SIZE);
 
     status = Crypto_Init();
+    ASSERT_EQ(CRYPTO_LIB_SUCCESS, status);
+
+    MDB_DB_RESET();
 
     SadbRoutine sadb_routine = get_sadb_routine_mariadb();
     //need the sa call
@@ -116,9 +229,8 @@ UTEST(MARIA_DB, DB_CONNECT)
 UTEST(MARIA_DB, HAPPY_PATH_ENC)
 {
     int32_t status = CRYPTO_LIB_ERROR;
-    reload_db();
     
-    status = Crypto_Config_MariaDB(mysql_hostname, mysql_database, mysql_port, CRYPTO_FALSE, verify_server, ssl_ca,
+    status = Crypto_Config_MariaDB(mysql_hostname, mysql_database, mysql_dbport, CRYPTO_FALSE, verify_server, ssl_ca,
                                 ssl_capath, ssl_cert, ssl_key, client_key_password, mysql_username, mysql_password);
     ASSERT_EQ(CRYPTO_LIB_SUCCESS, status);
 
@@ -129,6 +241,9 @@ UTEST(MARIA_DB, HAPPY_PATH_ENC)
     Crypto_Config_Add_Gvcid_Managed_Parameter(0, 0x0003, 1, TC_HAS_FECF, TC_HAS_SEGMENT_HDRS, TC_SIZE);
 
     status = Crypto_Init();
+    ASSERT_EQ(CRYPTO_LIB_SUCCESS, status);
+
+    MDB_DB_RESET();
 
     char* raw_tc_sdls_ping_h = "20030015000080d2c70008197f0b00310000b1fe3128";
     char* raw_tc_sdls_ping_b = NULL;
@@ -166,9 +281,8 @@ UTEST(MARIA_DB, HAPPY_PATH_ENC)
 UTEST(MARIA_DB, HAPPY_PATH_AUTH_ENC)
 {
     int32_t status = CRYPTO_LIB_ERROR;
-    reload_db();
     
-    status = Crypto_Config_MariaDB(mysql_hostname, mysql_database, mysql_port, CRYPTO_FALSE, verify_server, ssl_ca,
+    status = Crypto_Config_MariaDB(mysql_hostname, mysql_database, mysql_dbport, CRYPTO_FALSE, verify_server, ssl_ca,
                                 ssl_capath, ssl_cert, ssl_key, client_key_password, mysql_username, mysql_password);
     ASSERT_EQ(CRYPTO_LIB_SUCCESS, status);
 
@@ -180,6 +294,9 @@ UTEST(MARIA_DB, HAPPY_PATH_AUTH_ENC)
     Crypto_Config_Add_Gvcid_Managed_Parameter(0, 0x0003, 1, TC_HAS_FECF, TC_HAS_SEGMENT_HDRS, TC_SIZE);
 
     status = Crypto_Init();
+    ASSERT_EQ(CRYPTO_LIB_SUCCESS, status);
+
+    MDB_DB_RESET();
 
     char* raw_tc_sdls_ping_h = "20030415000080d2c70008197f0b00310000b1fe3128";
     char* raw_tc_sdls_ping_b = NULL;
@@ -226,9 +343,8 @@ UTEST(MARIA_DB, AUTH_DECRYPTION_TEST)
     uint8_t* dec_test_b, *enc_test_b = NULL;
     int dec_test_len, enc_test_len = 0;
     int32_t status = CRYPTO_LIB_ERROR;
-    reload_db();
     
-    status = Crypto_Config_MariaDB(mysql_hostname, mysql_database, mysql_port, CRYPTO_FALSE, verify_server, ssl_ca,
+    status = Crypto_Config_MariaDB(mysql_hostname, mysql_database, mysql_dbport, CRYPTO_FALSE, verify_server, ssl_ca,
                                 ssl_capath, ssl_cert, ssl_key, client_key_password, mysql_username, mysql_password);
     ASSERT_EQ(CRYPTO_LIB_SUCCESS, status);
 
@@ -240,6 +356,9 @@ UTEST(MARIA_DB, AUTH_DECRYPTION_TEST)
     Crypto_Config_Add_Gvcid_Managed_Parameter(0, 0x0003, 1, TC_HAS_FECF, TC_HAS_SEGMENT_HDRS, TC_SIZE);
 
     status = Crypto_Init();
+    ASSERT_EQ(CRYPTO_LIB_SUCCESS, status);
+
+    MDB_DB_RESET();
 
     SadbRoutine sadb_routine = get_sadb_routine_mariadb();
 
@@ -278,9 +397,8 @@ UTEST(MARIA_DB, AUTH_DECRYPTION_TEST)
 UTEST(MARIA_DB, HAPPY_PATH_APPLY_NONTRANSMITTED_INCREMENTING_IV_ROLLOVER)
 {
     int32_t status = CRYPTO_LIB_ERROR;
-    reload_db();
     
-    status = Crypto_Config_MariaDB(mysql_hostname, mysql_database, mysql_port, CRYPTO_FALSE, verify_server, ssl_ca,
+    status = Crypto_Config_MariaDB(mysql_hostname, mysql_database, mysql_dbport, CRYPTO_FALSE, verify_server, ssl_ca,
                                 ssl_capath, ssl_cert, ssl_key, client_key_password, mysql_username, mysql_password);
     ASSERT_EQ(CRYPTO_LIB_SUCCESS, status);
 
@@ -292,6 +410,9 @@ UTEST(MARIA_DB, HAPPY_PATH_APPLY_NONTRANSMITTED_INCREMENTING_IV_ROLLOVER)
     Crypto_Config_Add_Gvcid_Managed_Parameter(0, 0x0003, 2, TC_HAS_FECF, TC_HAS_SEGMENT_HDRS, TC_SIZE);
 
     status = Crypto_Init();
+    ASSERT_EQ(CRYPTO_LIB_SUCCESS, status);
+
+    MDB_DB_RESET();
 
     char* raw_tc_sdls_ping_h = "20030815000080d2c70008197f0b00310000b1fe3128";
     char* raw_tc_sdls_ping_b = NULL;
@@ -361,9 +482,8 @@ UTEST(MARIA_DB, HAPPY_PATH_APPLY_NONTRANSMITTED_INCREMENTING_IV_ROLLOVER)
 UTEST(MARIA_DB, HAPPY_PATH_APPLY_STATIC_IV_ROLLOVER)
 {
     int32_t status = CRYPTO_LIB_ERROR;
-    reload_db();
     
-    status = Crypto_Config_MariaDB(mysql_hostname, mysql_database, mysql_port, CRYPTO_FALSE, verify_server, ssl_ca,
+    status = Crypto_Config_MariaDB(mysql_hostname, mysql_database, mysql_dbport, CRYPTO_FALSE, verify_server, ssl_ca,
                                 ssl_capath, ssl_cert, ssl_key, client_key_password, mysql_username, mysql_password);
     ASSERT_EQ(CRYPTO_LIB_SUCCESS, status);
 
@@ -375,6 +495,9 @@ UTEST(MARIA_DB, HAPPY_PATH_APPLY_STATIC_IV_ROLLOVER)
     Crypto_Config_Add_Gvcid_Managed_Parameter(0, 0x0003, 2, TC_HAS_FECF, TC_HAS_SEGMENT_HDRS, TC_SIZE);
 
     status = Crypto_Init();
+    ASSERT_EQ(CRYPTO_LIB_SUCCESS, status);
+
+    MDB_DB_RESET();
 
     char* raw_tc_sdls_ping_h = "20030815000080d2c70008197f0b00310000b1fe3128";
     char* raw_tc_sdls_ping_b = NULL;
@@ -445,9 +568,8 @@ UTEST(MARIA_DB, HAPPY_PATH_APPLY_STATIC_IV_ROLLOVER)
 UTEST(MARIA_DB, HAPPY_PATH_APPLY_NONTRANSMITTED_INCREMENTING_ARSN_ROLLOVER)
 {
     int32_t status = CRYPTO_LIB_ERROR;
-    reload_db();
     
-    status = Crypto_Config_MariaDB(mysql_hostname, mysql_database, mysql_port, CRYPTO_FALSE, verify_server, ssl_ca,
+    status = Crypto_Config_MariaDB(mysql_hostname, mysql_database, mysql_dbport, CRYPTO_FALSE, verify_server, ssl_ca,
                                 ssl_capath, ssl_cert, ssl_key, client_key_password, mysql_username, mysql_password);
     ASSERT_EQ(CRYPTO_LIB_SUCCESS, status);
 
@@ -459,6 +581,9 @@ UTEST(MARIA_DB, HAPPY_PATH_APPLY_NONTRANSMITTED_INCREMENTING_ARSN_ROLLOVER)
     Crypto_Config_Add_Gvcid_Managed_Parameter(0, 0x0003, 3, TC_HAS_FECF, TC_HAS_SEGMENT_HDRS, TC_SIZE);
 
     status = Crypto_Init();
+    ASSERT_EQ(CRYPTO_LIB_SUCCESS, status);
+
+    MDB_DB_RESET();
 
     char* raw_tc_sdls_ping_h = "20030C15000080d2c70008197f0b00310000b1fe3128";
     char* raw_tc_sdls_ping_b = NULL;
@@ -551,9 +676,8 @@ UTEST(MARIA_DB, HAPPY_PATH_APPLY_NONTRANSMITTED_INCREMENTING_ARSN_ROLLOVER)
 UTEST(MARIA_DB, BAD_SPACE_CRAFT_ID)
 {
     int32_t status = CRYPTO_LIB_ERROR;
-    reload_db();
     
-    status = Crypto_Config_MariaDB(mysql_hostname, mysql_database, mysql_port, CRYPTO_FALSE, verify_server, ssl_ca,
+    status = Crypto_Config_MariaDB(mysql_hostname, mysql_database, mysql_dbport, CRYPTO_FALSE, verify_server, ssl_ca,
                                 ssl_capath, ssl_cert, ssl_key, client_key_password, mysql_username, mysql_password);
     ASSERT_EQ(CRYPTO_LIB_SUCCESS, status);
 
@@ -565,6 +689,9 @@ UTEST(MARIA_DB, BAD_SPACE_CRAFT_ID)
     Crypto_Config_Add_Gvcid_Managed_Parameter(0, 0x0003, 3, TC_HAS_FECF, TC_HAS_SEGMENT_HDRS, TC_SIZE);
 
     status = Crypto_Init();
+    ASSERT_EQ(CRYPTO_LIB_SUCCESS, status);
+
+    MDB_DB_RESET();
 
     char* raw_tc_sdls_ping_bad_scid_h = "20010015000080d2c70008197f0b00310000b1fe3128";
     char* raw_tc_sdls_ping_bad_scid_b = NULL;

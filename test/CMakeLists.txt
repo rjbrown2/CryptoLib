@@ -68,9 +68,9 @@ if(${KMC_MDB_RH} OR ${KMC_MDB_DB})
              COMMAND ${PROJECT_BINARY_DIR}/bin/ut_mysql_tls_connection
              WORKING_DIRECTORY ${PROJECT_TEST_DIR})
 
-    add_test(NAME UT_MYSQL_M_TLS_CONNECTION
-             COMMAND ${PROJECT_BINARY_DIR}/bin/ut_mysql_m_tls_connection
-             WORKING_DIRECTORY ${PROJECT_TEST_DIR})
+    #add_test(NAME UT_MYSQL_M_TLS_CONNECTION
+    #         COMMAND ${PROJECT_BINARY_DIR}/bin/ut_mysql_m_tls_connection
+    #         WORKING_DIRECTORY ${PROJECT_TEST_DIR})
              
     add_test(NAME UT_MARIADB
              COMMAND ${PROJECT_BINARY_DIR}/bin/ut_mariadb

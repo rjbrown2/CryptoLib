@@ -60,6 +60,15 @@ Password: <PASSWORD>
 #include "crypto_config_structs.h"
 #include <mysql/mysql.h>
 
+#ifdef KMC_MDB_RH
+    #define CLIENT_CERTIFICATE "/certs/redhat-cert.pem"
+    #define CLIENT_CERTIFICATE_KEY "/certs/redhat-key.pem"
+#endif
+
+#ifdef KMC_MDB_DB
+    #define CLIENT_CERTIFICATE "/certs/debian-cert.pem"
+    #define CLIENT_CERTIFICATE_KEY "/certs/debian-key.pem"
+#endif
 
 int32_t Crypto_Init_Unit_Test_For_DB(void);
 /*Attempting to test a connection similar to command line authentication: 
@@ -71,19 +80,19 @@ UTEST(MARIA_DB_CONNECTION_TESTS, TLS_TEST) {
     int status = 0;
     /*connection input parameters. 
      Note: username, pass, and paths may differ on your system*/
-    char* mysql_username = "testuser1";
-    char* password = "l0ngp@ssWord"; //replace with actual password or test will fail.
-    char* mysql_hostname = "asec-cmdenc-dev2.jpl.nasa.gov";
-    char* mysql_database = NULL;
+    char* mysql_username = "root";
+    char* password = NULL; //replace with actual password or test will fail - unless passwords are NOT accepted.
+    char* mysql_hostname = "db-itc-kmc.nasa.gov";
+    char* mysql_database = "sadb";
     uint16_t mysql_port = 3306;
-    char* ssl_cert = "/etc/pki/tls/certs/ammos-server-cert.pem";
-    char* ssl_key = "/etc/pki/tls/private/ammos-server-key.pem";
-    char* ssl_ca = "/etc/pki/tls/certs/ammos-ca-bundle.crt";
-    char* ssl_capath = "/etc/pki/tls/certs/";
+
+    char* ssl_cert = CLIENT_CERTIFICATE;
+    char* ssl_key = CLIENT_CERTIFICATE_KEY;
+    char* ssl_ca = "/certs/ammos-ca-bundle.crt";
+    char* ssl_capath = NULL;
     uint8_t verify_server = 0;
     char* client_key_password = NULL;
-
-    /*set configuration params*/
+    /*set configuration params*/    
     status = Crypto_Config_MariaDB(mysql_hostname, mysql_database, mysql_port, CRYPTO_TRUE, verify_server, ssl_ca,
                                    ssl_capath, ssl_cert, ssl_key, client_key_password, mysql_username, password);
     ASSERT_EQ(CRYPTO_LIB_SUCCESS, status);
