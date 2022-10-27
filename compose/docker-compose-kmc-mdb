@@ -2,7 +2,7 @@ version: '3.8'
 services:
   kmc:
     hostname: itc-kmc.nasa.gov
-    image: rbrown00/itc-kmc:latest 
+    image: ivvitc/itc-kmc:latest 
     ports:    
       - '8443:8443'
     command: "/lib/systemd/systemd"
@@ -19,7 +19,7 @@ services:
 
   redhat:
     hostname: redhat-itc-kmc.nasa.gov
-    image: rbrown00/redhattest:latest
+    image: ivvitc/redhattest:latest
     volumes:
       - kmc:/certs
       - '/home/runner/work/CryptoLib/CryptoLib:/itc/CryptoLib'
@@ -31,7 +31,7 @@ services:
 
   debian:
     hostname: debian-itc-kmc.nasa.gov
-    image: rbrown00/debiantest:latest
+    image: ivvitc/debiantest:latest
     volumes:
       - kmc:/certs
       - '/home/runner/work/CryptoLib/CryptoLib:/itc/CryptoLib'
@@ -53,11 +53,13 @@ services:
     volumes:
       - db:/var/lib/mysql
       - kmc:/certs
-      - ./50-server.cnf:/etc/mysql/conf.d/50-server.cnf
+      - ./50-server.cnf:/etc/mysql/mariadb.conf.d/50-server.cnf
       # Files to initalize the sql database
       - ./create_sadb.sql:/docker-entrypoint-initdb.d/1.sql
       - ./ivv_unit_tests.sql:/docker-entrypoint-initdb.d/2.sql
       - ./create_user.sql:/docker-entrypoint-initdb.d/3.sql
+    ports:
+      - '3306:3306'
     depends_on:
       - kmc
     networks:
