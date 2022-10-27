@@ -29,10 +29,9 @@ jobs:
         run: docker exec compose_redhat_1 bash -c 'if test -d /itc/CryptoLib/build; then rm -rf /itc/CryptoLib/build; fi' 
       - name: Build RedHat CryptoLib
         run: docker exec compose_redhat_1 bash -c 'cd /itc/CryptoLib/ && git checkout ${{ env.CURRENT_BRANCH }} && mkdir build && cd build && cmake -DDEBUG=1 -DMYSQL=1 -DLIBGCRYPT=1 -DKMCCRYPTO=1 -DENCTEST=1 -DKMC_MDB_RH=1 ../ && make'
-      - name: Test RedHat CryptoLib - ut_tc_kmc
-        run: docker exec compose_redhat_1 bash -c 'cd /itc/CryptoLib/build/bin && ./ut_tc_kmc' 
-      - name: KMC-SA-MGMT LIST
-        run: docker exec compose_kmc_1 bash -c '/ammos/kmc-crypto-client/bin/kmc-sa-mgmt list'
+      - name: Test RedHat CryptoLib 
+        run: docker exec compose_redhat_1 bash -c 'cd /itc/CryptoLib/build/ && make test' 
+        
       - name: Cleanup Redhat
         run: cd ./compose && docker-compose -f docker-compose-kmc-mdb down
         
@@ -62,9 +61,7 @@ jobs:
       - name: Build Debian CryptoLib
         run: docker exec compose_debian_1 bash -c 'cd /itc/CryptoLib/ && git checkout ${{ env.CURRENT_BRANCH }} && mkdir build && cd build && cmake -DDEBUG=1 -DMYSQL=1 -DLIBGCRYPT=1 -DKMCCRYPTO=1 -DENCTEST=1 -DKMC_MDB_DB=1 ../ && make'
       - name: Test Debian CryptoLib - ut_tc_kmc
-        run: docker exec compose_debian_1 bash -c 'cd /itc/CryptoLib/build/bin && ./ut_tc_kmc' 
-      - name: KMC-SA-MGMT LIST
-        run: docker exec compose_kmc_1 bash -c '/ammos/kmc-crypto-client/bin/kmc-sa-mgmt list'
+        run: docker exec compose_debian_1 bash -c 'cd /itc/CryptoLib/build/ && make test' 
         
       - name: Cleanup Debian
         run: cd ./compose && docker-compose -f docker-compose-kmc-mdb down
