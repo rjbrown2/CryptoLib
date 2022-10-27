@@ -59,9 +59,17 @@ jobs:
       - name: Exception for Git Directory
         run: docker exec compose_debian_1 bash -c 'git config --global --add safe.directory /itc/CryptoLib'
       - name: Build Debian CryptoLib
-        run: docker exec compose_debian_1 bash -c 'cd /itc/CryptoLib/ && git checkout ${{ env.CURRENT_BRANCH }} && mkdir build && cd build && cmake -DDEBUG=1 -DMYSQL=1 -DLIBGCRYPT=1 -DKMCCRYPTO=1 -DENCTEST=1 -DKMC_MDB_DB=1 ../ && make'
+        run: docker exec compose_debian_1 bash -c 'cd /itc/CryptoLib/ && git checkout ${{ env.CURRENT_BRANCH }} && mkdir build && cd build && cmake -DDEBUG=1 -DMYSQL=1 -DLIBGCRYPT=1 -DKMCCRYPTO=1 -DENCTEST=1 -DKMC_MDB_DB=1 -DCODECOV=1 ../ && make'
       - name: Test Debian CryptoLib - ut_tc_kmc
         run: docker exec compose_debian_1 bash -c 'cd /itc/CryptoLib/build/ && make test' 
-        
+      
+      - name: Code-Coverage
+        run: docker exec compose_debian_1 bash -c 'apt-get install -y lcov && cd /itc/CryptoLib/build/ && make gcov'
+      - name: Upload 
+        uses: codecov/codecov-action@v1
+        with:
+          #files: ${{github.workspace}}/build/coverage/crypto_aos.c.gcov,${{github.workspace}}/build/coverage/crypto_config.c.gcov,${{github.workspace}}/build/coverage/crypto_mc.c.gcov,${{github.workspace}}/build/coverage/crypto_tc.c.gcov,${{github.workspace}}/build/coverage/crypto_user.c.gcov,${{github.workspace}}/build/coverage/crypto.c.gcov,${{github.workspace}}/build/coverage/crypto_key_mgmt.c.gcov,${{github.workspace}}/build/coverage/crypto_print.c.gcov,${{github.workspace}}/build/coverage/crypto_tm.c.gcov,${{github.workspace}}/build/coverage/sadb_routine_inmemory.template.c.gcov
+          files: 'coverage/*.c.gcov'        
+      
       - name: Cleanup Debian
         run: cd ./compose && docker-compose -f docker-compose-kmc-mdb down
