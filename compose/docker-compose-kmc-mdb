@@ -31,7 +31,7 @@ services:
 
   debian:
     hostname: debian-itc-kmc.nasa.gov
-    image: ivvitc/debtest:test
+    image: ivvitc/debiantest:test
     volumes:
       - kmc:/certs
       - '/home/runner/work/CryptoLib/CryptoLib:/itc/CryptoLib'
